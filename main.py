@@ -2,11 +2,12 @@
 Hopefully a single file server.
 """
 import os
+import datetime
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from starlette.applications import Starlette
-from starlette.responses import PlainTextResponse
+from starlette.responses import PlainTextResponse, JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 
@@ -67,7 +68,20 @@ def cvd(repo, request):
     return vd
 
 def metadata(request):
-    return PlainTextResponse("metadata")
+    """
+    Metadata for the site
+    """
+    host = request.headers['host']
+    repo = Repository(REPO_HOME)
+    origin = repo.remotes["origin"].url
+    head = repo.revparse_single('HEAD')
+
+    return JSONResponse({
+        "site": f'{request.url.scheme}://{host}{request.url.path}',
+        "origin": origin,
+        "head": str(head.id),
+        "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time))
+    })
 
 def directory(request):
     """
