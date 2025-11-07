@@ -66,6 +66,9 @@ def cvd(repo, request):
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
 
+def metadata(request):
+    return PlainTextResponse("metadata")
+
 def directory(request):
     """
     Site tree
@@ -115,8 +118,11 @@ def vers(request):
     return PlainTextResponse(res)
 
 
-# RESERVED ROUTES: object, versions
+# RESERVED ROUTES: meta, object, versions
 routes = [
+    Route('/meta', metadata),
+    Route('/meta/', metadata), # kindness is virtue
+    Route('/meta/{meta_url:path}', metadata),
     Route('/object', directory),
     Route('/object/', directory), # kindness is virtue
     Route('/object/{object}', obj),
