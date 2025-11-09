@@ -125,7 +125,7 @@ class Object(HTTPEndpoint):
         return PlainTextResponse(res[start:end])
 
 
-class Version(HTTPEndpoint):
+class Versions(HTTPEndpoint):
     """
     Convert file properties to object form.
     """
@@ -150,17 +150,26 @@ class Version(HTTPEndpoint):
 # RESERVED ROUTES: meta, object, versions
 routes = [
     Route('/meta', Metadata),
-    Route('/meta/', Metadata), # kindness is virtue
-    Route('/meta/{meta_url:path}', Metadata),
+    Mount('/meta', routes=[
+        Route('/', Metadata),
+        Route('/{meta_url:path}', Metadata),
+    ]),
+
     Route('/object', Directory),
-    Route('/object/', Directory), # kindness is virtue
-    Route('/object/{object}', Object),
-    Route('/object/{object}/{start:int}/-', Object),
-    Route('/object/{object}/{start:int}/-/{end:int}', Object),
-    Route('/object/{object}/-/{end:int}', Object),
+    Mount('/object', routes=[
+        Route('/', Directory),
+        Route('/{object}', Object),
+        Route('/{object}/{start:int}/-', Object),
+        Route('/{object}/{start:int}/-/{end:int}', Object),
+        Route('/{object}/-/{end:int}', Object),
+    ]),
+    
     Route('/versions', Directory),
-    Route('/versions/', Directory), # kindness is virtue
-    Route('/versions/{path_to_file:path}', Version),
+    Mount('/versions', routes=[
+        Route('/', Directory),
+        Route('/{path_to_file:path}', Versions),
+    ]),
+    
     Mount('/', app=StaticFiles(directory=SRV_HOME, html=True)),
 ]
 
