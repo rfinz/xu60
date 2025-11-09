@@ -7,6 +7,7 @@ from pathlib import Path
 
 from starlette.applications import Starlette
 from starlette.endpoints import HTTPEndpoint
+from starlette.middleware import Middleware
 from starlette.responses import PlainTextResponse, JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
@@ -17,8 +18,13 @@ from pygit2.enums import SortMode
 from pygit2.enums import ObjectType
 
 config = Config(env_prefix='XU60_')
+
 REPO_HOME = Path(config("REPO_HOME", default="."))
 SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
+OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
+VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
+META_ROUTE = config("META_ROUTE", default="meta")
+
 
 @asynccontextmanager
 async def lifespan(app):
@@ -68,6 +74,20 @@ def cvd(repo, request):
 
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
+
+
+class MetadataMiddleware:
+    """
+    Wrap responses in metadata JSON
+    """
+    def __init__(self, app):
+        self.app = app
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        await self.app(scope, receive, send)
 
 
 class Metadata(HTTPEndpoint):
@@ -149,27 +169,29 @@ class Versions(HTTPEndpoint):
 
 # RESERVED ROUTES: meta, object, versions
 routes = [
-    Route('/meta', Metadata),
-    Mount('/meta', routes=[
-        Route('/', Metadata),
-        Route('/{meta_url:path}', Metadata),
-    ]),
-
-    Route('/object', Directory),
-    Mount('/object', routes=[
+    Route(f'/{META_ROUTE}', Metadata),
+    Mount(f'/{META_ROUTE}',
+          routes=[
+              Route('/', Metadata),
+              Route('/{meta_url:path}', Metadata),
+          ],
+          middleware=[Middleware(MetadataMiddleware)]
+    ),
+    Route(f'/{OBJECT_ROUTE}', Directory),
+    Mount(f'/{OBJECT_ROUTE}', routes=[
         Route('/', Directory),
         Route('/{object}', Object),
         Route('/{object}/{start:int}/-', Object),
         Route('/{object}/{start:int}/-/{end:int}', Object),
         Route('/{object}/-/{end:int}', Object),
     ]),
-    
-    Route('/versions', Directory),
-    Mount('/versions', routes=[
+
+    Route(f'/{VERSIONS_ROUTE}', Directory),
+    Mount(f'/{VERSIONS_ROUTE}', routes=[
         Route('/', Directory),
         Route('/{path_to_file:path}', Versions),
     ]),
-    
+
     Mount('/', app=StaticFiles(directory=SRV_HOME, html=True)),
 ]
 
