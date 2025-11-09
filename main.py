@@ -77,6 +77,11 @@ def metadata(request):
     origin = repo.remotes["origin"].url
     head = repo.revparse_single('HEAD')
 
+    if request.path_params.get('meta_url'):
+        return JSONResponse({
+            "url":request.path_params['meta_url']
+        })
+
     return JSONResponse({
         "site": f'{request.url.scheme}://{host}{request.url.path}',
         "origin": origin,
