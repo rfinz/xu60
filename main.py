@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from starlette.applications import Starlette
+from starlette.endpoints import HTTPEndpoint
 from starlette.responses import PlainTextResponse, JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
@@ -68,90 +69,98 @@ def cvd(repo, request):
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
 
-def metadata(request):
+
+class Metadata(HTTPEndpoint):
     """
     Metadata for the site
     """
-    host = request.headers['host']
-    repo = Repository(REPO_HOME)
-    origin = repo.remotes["origin"].url
-    head = repo.revparse_single('HEAD')
+    async def get(self, request):
+        host = request.headers['host']
+        repo = Repository(REPO_HOME)
+        origin = repo.remotes["origin"].url
+        head = repo.revparse_single('HEAD')
 
-    if request.path_params.get('meta_url'):
+        if request.path_params.get('meta_url'):
+            return JSONResponse({
+                "url":request.path_params['meta_url']
+            })
+
         return JSONResponse({
-            "url":request.path_params['meta_url']
+            "site": f'{request.url.scheme}://{host}{request.url.path}',
+            "origin": origin,
+            "head": str(head.id),
+            "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time))
         })
 
-    return JSONResponse({
-        "site": f'{request.url.scheme}://{host}{request.url.path}',
-        "origin": origin,
-        "head": str(head.id),
-        "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time))
-    })
 
-def directory(request):
+class Directory(HTTPEndpoint):
     """
     Site tree
     """
-    repo = Repository(REPO_HOME)
-    res = "object,time,name,length\n"
+    async def get(self, request):
+        repo = Repository(REPO_HOME)
+        res = "object,time,name,length\n"
 
-    vd = cvd(repo, request)
+        vd = cvd(repo, request)
 
-    for c in reversed(vd):
-        for t in vd[c]:
-            res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
+        for c in reversed(vd):
+            for t in vd[c]:
+                res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
 
-    return PlainTextResponse(res)
+        return PlainTextResponse(res)
 
-def obj(request):
+
+class Object(HTTPEndpoint):
     """
     Get object contents from repo
     """
-    repo = Repository(REPO_HOME)
-    oid = request.path_params['object']
+    async def get(self, request):
+        repo = Repository(REPO_HOME)
+        oid = request.path_params['object']
 
-    start = request.path_params.get('start', 0)
-    end = request.path_params.get('end', -1)
+        start = request.path_params.get('start', 0)
+        end = request.path_params.get('end', -1)
 
-    res = repo.get(oid).data
-    return PlainTextResponse(res[start:end])
+        res = repo.get(oid).data
+        return PlainTextResponse(res[start:end])
 
-def vers(request):
+
+class Version(HTTPEndpoint):
     """
     Convert file properties to object form.
     """
-    repo = Repository(REPO_HOME)
-    p = request.path_params['path_to_file']
-    versions = {}
+    async def get(self, request):
+        repo = Repository(REPO_HOME)
+        p = request.path_params['path_to_file']
+        versions = {}
 
-    vd = cvd(repo, request)
+        vd = cvd(repo, request)
 
-    for c in reversed(vd):
-        for t in vd[c]:
-            if t["name"] in versions:
-                versions[t["name"]] = versions[t["name"]] + [str(t["id"])]
-            else:
-                versions[t["name"]] = [str(t["id"])]
+        for c in reversed(vd):
+            for t in vd[c]:
+                if t["name"] in versions:
+                    versions[t["name"]] = versions[t["name"]] + [str(t["id"])]
+                else:
+                    versions[t["name"]] = [str(t["id"])]
 
-    res = "\n".join(versions.get(p,[])).rstrip()
-    return PlainTextResponse(res)
+        res = "\n".join(versions.get(p,[])).rstrip()
+        return PlainTextResponse(res)
 
 
 # RESERVED ROUTES: meta, object, versions
 routes = [
-    Route('/meta', metadata),
-    Route('/meta/', metadata), # kindness is virtue
-    Route('/meta/{meta_url:path}', metadata),
-    Route('/object', directory),
-    Route('/object/', directory), # kindness is virtue
-    Route('/object/{object}', obj),
-    Route('/object/{object}/{start:int}/-', obj),
-    Route('/object/{object}/{start:int}/-/{end:int}', obj),
-    Route('/object/{object}/-/{end:int}', obj),
-    Route('/versions', directory),
-    Route('/versions/', directory), # kindness is virtue
-    Route('/versions/{path_to_file:path}', vers),
+    Route('/meta', Metadata),
+    Route('/meta/', Metadata), # kindness is virtue
+    Route('/meta/{meta_url:path}', Metadata),
+    Route('/object', Directory),
+    Route('/object/', Directory), # kindness is virtue
+    Route('/object/{object}', Object),
+    Route('/object/{object}/{start:int}/-', Object),
+    Route('/object/{object}/{start:int}/-/{end:int}', Object),
+    Route('/object/{object}/-/{end:int}', Object),
+    Route('/versions', Directory),
+    Route('/versions/', Directory), # kindness is virtue
+    Route('/versions/{path_to_file:path}', Version),
     Mount('/', app=StaticFiles(directory=SRV_HOME, html=True)),
 ]
 
