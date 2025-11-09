@@ -1,7 +1,6 @@
 """
 Hopefully a single file server.
 """
-import os
 import datetime
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -10,13 +9,15 @@ from starlette.applications import Starlette
 from starlette.responses import PlainTextResponse, JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
+from starlette.config import Config
 
 from pygit2 import Repository
 from pygit2.enums import SortMode
 from pygit2.enums import ObjectType
 
-REPO_HOME = Path(os.environ.get("HYPERHYPER_REPO_HOME", "."))
-SRV_HOME = Path(os.environ.get("HYPERHYPER_SRV_HOME", REPO_HOME))
+config = Config(env_prefix='XU60_')
+REPO_HOME = Path(config("REPO_HOME", default="."))
+SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
 
 @asynccontextmanager
 async def lifespan(app):
