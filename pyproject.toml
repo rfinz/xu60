@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xu60"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [
   {name = "Raymond Finzel", email = "github@rfinz.mozmail.com"},
 ]
