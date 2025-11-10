@@ -7,8 +7,7 @@ from pathlib import Path
 
 from starlette.applications import Starlette
 from starlette.endpoints import HTTPEndpoint
-from starlette.middleware import Middleware
-from starlette.responses import PlainTextResponse, JSONResponse
+from starlette.responses import Response, JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 from starlette.config import Config
@@ -76,35 +75,32 @@ def cvd(repo, request):
     return vd
 
 
-class MetadataMiddleware:
-    """
-    Wrap responses in metadata JSON
-    """
-    def __init__(self, app):
-        self.app = app
-    async def __call__(self, scope, receive, send):
-        if scope["type"] != "http":
-            await self.app(scope, receive, send)
-            return
-
-        await self.app(scope, receive, send)
-
-
 class Metadata(HTTPEndpoint):
     """
     Metadata for the site
     """
+    async def noop(self, scope, receive, send):
+        """
+        No op callable to satisfy the endpoint
+        """
+
     async def get(self, request):
         host = request.headers['host']
         repo = Repository(REPO_HOME)
         origin = repo.remotes["origin"].url
         head = repo.revparse_single('HEAD')
+        meta = request.path_params.get('meta_url')
 
-        if request.path_params.get('meta_url'):
-            return JSONResponse({
-                "url":request.path_params['meta_url']
-            })
-
+        if meta:
+            scope = dict(self.scope)
+            del scope["root_path"]
+            del scope["path_params"]
+            scope["path"] = "/" + meta
+            scope["raw_path"] = str.encode(scope["path"])
+            scope["xu60.meta"] = True
+            await request.app(scope, self.receive, self.send)
+            return self.noop
+   
         return JSONResponse({
             "site": f'{request.url.scheme}://{host}{request.url.path}',
             "origin": origin,
@@ -126,8 +122,9 @@ class Directory(HTTPEndpoint):
         for c in reversed(vd):
             for t in vd[c]:
                 res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
-
-        return PlainTextResponse(res)
+        if self.scope.get("xu60.meta"):
+            return JSONResponse({"body":res})
+        return Response(res, media_type='text/plain')
 
 
 class Object(HTTPEndpoint):
@@ -141,8 +138,10 @@ class Object(HTTPEndpoint):
         start = request.path_params.get('start', 0)
         end = request.path_params.get('end', -1)
 
-        res = repo.get(oid).data
-        return PlainTextResponse(res[start:end])
+        res = repo.get(oid).data[start:end]
+        if self.scope.get("xu60.meta"):
+            return JSONResponse({"body":res})
+        return Response(res, media_type='text/plain')
 
 
 class Versions(HTTPEndpoint):
@@ -164,7 +163,9 @@ class Versions(HTTPEndpoint):
                     versions[t["name"]] = [str(t["id"])]
 
         res = "\n".join(versions.get(p,[])).rstrip()
-        return PlainTextResponse(res)
+        if self.scope.get("xu60.meta"):
+            return JSONResponse({"body":res})
+        return Response(res, media_type='text/plain')
 
 
 # RESERVED ROUTES: meta, object, versions
@@ -174,23 +175,25 @@ routes = [
           routes=[
               Route('/', Metadata),
               Route('/{meta_url:path}', Metadata),
-          ],
-          middleware=[Middleware(MetadataMiddleware)]
+          ]
     ),
     Route(f'/{OBJECT_ROUTE}', Directory),
-    Mount(f'/{OBJECT_ROUTE}', routes=[
-        Route('/', Directory),
-        Route('/{object}', Object),
-        Route('/{object}/{start:int}/-', Object),
-        Route('/{object}/{start:int}/-/{end:int}', Object),
-        Route('/{object}/-/{end:int}', Object),
-    ]),
-
+    Mount(f'/{OBJECT_ROUTE}',
+          routes=[
+              Route('/', Directory),
+              Route('/{object}', Object),
+              Route('/{object}/{start:int}/-', Object),
+              Route('/{object}/{start:int}/-/{end:int}', Object),
+              Route('/{object}/-/{end:int}', Object)
+        ]
+    ),
     Route(f'/{VERSIONS_ROUTE}', Directory),
-    Mount(f'/{VERSIONS_ROUTE}', routes=[
-        Route('/', Directory),
-        Route('/{path_to_file:path}', Versions),
-    ]),
+    Mount(f'/{VERSIONS_ROUTE}',
+          routes=[
+              Route('/', Directory),
+              Route('/{path_to_file:path}', Versions)
+          ]
+    ),
 
     Mount('/', app=StaticFiles(directory=SRV_HOME, html=True)),
 ]
