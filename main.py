@@ -186,9 +186,13 @@ class Versions(HTTPEndpoint):
                 else:
                     versions[t["name"]] = [str(t["id"])]
 
-        res = "\n".join(versions.get(p,[])).rstrip()
         if self.scope.get("xu60.meta"):
-            return JSONResponse({"body":res})
+            return JSONResponse({
+                "name": p,
+                "versions": versions.get(p, [])
+            })
+
+        res = "\n".join(versions.get(p,[])).rstrip()
         return Response(res, media_type='text/plain')
 
 
