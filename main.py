@@ -12,6 +12,7 @@ from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 from starlette.config import Config
 
+import pygit2
 from pygit2 import Repository
 from pygit2.enums import SortMode
 from pygit2.enums import ObjectType
@@ -24,14 +25,22 @@ OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
 
-
 @asynccontextmanager
 async def lifespan(app):
     """
     Lifespan management.
     """
     print('Startup')
+    # double cache size and enable caching for objects under 512KB
+    pygit2.settings.cache_max_size(512 * 1024**2)
+    pygit2.settings.cache_object_limit(ObjectType.BLOB, 512 * 1024)
+
     yield
+
+    print(
+        'libgit2 cache use: ' \
+        f'{pygit2.settings.cached_memory[0]}B of {pygit2.settings.cached_memory[1]}B'
+    )
     print('Shutdown')
 
 def cvd(repo, request):
