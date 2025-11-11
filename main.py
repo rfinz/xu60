@@ -144,21 +144,23 @@ class Object(HTTPEndpoint):
         """
         repo = Repository(REPO_HOME)
         oid = request.path_params['object']
+        obj = repo.get(oid)
 
         start = request.path_params.get('start', 0)
-        end = request.path_params.get('end', -1)
+        end = request.path_params.get('end', obj.size - 1)
 
-        obj = repo.get(oid)
         body = obj.data[start:end]
 
         if self.scope.get("xu60.meta"):
             vd = cvd(repo, request)
-            cid = [c for c in reversed(vd) if oid in (v['id'] for v in vd[c])]
+            cid = [c for c in reversed(vd) if oid in (v['id'] for v in vd[c])][0]
             return JSONResponse({
-                "id": str(oid),
+                "id": str(obj.id),
                 "body": body.decode('utf-8'),
-                "length": obj.size-1,
-                "commit_id": str(cid)
+                "length": obj.size - 1,
+                "window": {"start": start, "end": end},
+                "commit_id": str(cid),
+                "time": vd[cid][0]["time"]
             })
         return Response(body, media_type='text/plain')
 
