@@ -148,10 +148,19 @@ class Object(HTTPEndpoint):
         start = request.path_params.get('start', 0)
         end = request.path_params.get('end', -1)
 
-        res = repo.get(oid).data[start:end]
+        obj = repo.get(oid)
+        body = obj.data[start:end]
+
         if self.scope.get("xu60.meta"):
-            return JSONResponse({"body":res})
-        return Response(res, media_type='text/plain')
+            vd = cvd(repo, request)
+            cid = [c for c in reversed(vd) if oid in (v['id'] for v in vd[c])]
+            return JSONResponse({
+                "id": str(oid),
+                "body": body.decode('utf-8'),
+                "length": obj.size-1,
+                "commit_id": str(cid)
+            })
+        return Response(body, media_type='text/plain')
 
 
 class Versions(HTTPEndpoint):
