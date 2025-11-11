@@ -85,6 +85,10 @@ class Metadata(HTTPEndpoint):
         """
 
     async def get(self, request):
+        """
+        If a path is present, add flag to scope and re-route,
+        otherwise return JSON metadata for the entire repo.
+        """
         host = request.headers['host']
         repo = Repository(REPO_HOME)
         origin = repo.remotes["origin"].url
@@ -100,7 +104,7 @@ class Metadata(HTTPEndpoint):
             scope["xu60.meta"] = True
             await request.app(scope, self.receive, self.send)
             return self.noop
-   
+
         return JSONResponse({
             "site": f'{request.url.scheme}://{host}{request.url.path}',
             "origin": origin,
@@ -111,9 +115,12 @@ class Metadata(HTTPEndpoint):
 
 class Directory(HTTPEndpoint):
     """
-    Site tree
+    Site directory
     """
     async def get(self, request):
+        """
+        Send version directory, one entry per blob object in the tree.
+        """
         repo = Repository(REPO_HOME)
         res = "object,time,name,length\n"
 
@@ -132,6 +139,9 @@ class Object(HTTPEndpoint):
     Get object contents from repo
     """
     async def get(self, request):
+        """
+        Send object contents, with allowable URL pattern for selecting bytes.
+        """
         repo = Repository(REPO_HOME)
         oid = request.path_params['object']
 
@@ -149,6 +159,9 @@ class Versions(HTTPEndpoint):
     Convert file properties to object form.
     """
     async def get(self, request):
+        """
+        Send version IDs in reverse order (newest first)
+        """
         repo = Repository(REPO_HOME)
         p = request.path_params['path_to_file']
         versions = {}
