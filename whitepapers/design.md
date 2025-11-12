@@ -1,10 +1,12 @@
 # the design and demise of xu60
 
 - Link rot
+- bit.ly, doi.org, NFTs
 - BitTorrent
 - Source control(git, mercurial)
+- VSCode file timelines
 - Hypermedia (the Possiplex, Hypercard, HTTP, HTML, HTMX, HATEOAS, REST)
-- IPFS / IPLD
+- IPFS / IPLD, DNSlink
 - The Dark Forest internet
 - the federated social internet
 
@@ -42,3 +44,13 @@ However, most static websites are *already* content addressable inside of their 
 **xu60** is far from the best considered application of hash-based technologies. It does not concern itself too much with trust, truly decentralized management of state, or standardization into sane, efficient protocols.
 
 Instead, the contribution of **xu60** lies in the foregrounding of its non-technical goals and commmitment to the conceptual affordances of hypertext, which may be under-explored at their intersection with afforementioned content-addressable systems and hash-based content verification technologies.
+
+Although the goals of the project are "non-technical," the execution must be rock solid. Response times matter when we use computers, and for **xu60** to be a viable medium for hypertext on the web, apps based on it must render smoothly and behave responsively. Practically, these concerns mean that complex calculations should be cached, roundtrips should be reduced (i.e. the tradeoff of payload size vs. extra HTTP requests should be considered carefully), and datatypes should err. on the side of immediately renderable. Decoding, munging, searching through text, etc. that is left for the client should be kept to a minimum (excepting of course the cases in which that is the *point* of the client). 
+
+
+
+
+
+
+
+
