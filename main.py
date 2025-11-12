@@ -47,12 +47,12 @@ def cvd(repo, request):
     """
     Construct Version Directory (CVD)
     """
-    prev = {}
-    vd = {}
-
     if str(repo.head.target) in request.app.state.vd:
         # premature optimization type shi -- caching mechanism
         return request.app.state.vd[str(repo.head.target)]
+
+    prev = {}
+    vd = {}
 
     def construct(tree, commit, name=""):
         names = []
@@ -83,6 +83,26 @@ def cvd(repo, request):
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
 
+def cnd(repo, request):
+    """
+    Construct Name Directory (CND)
+    """
+
+    if str(repo.head.target) in request.app.state.nd:
+        return request.app.state.nd[str(repo.head.target)]
+
+    nd = {}
+    vd = cvd(repo, request)
+
+    for c in reversed(vd):
+        for t in vd[c]:
+            if t["name"] in nd:
+                nd[t["name"]] = nd[t["name"]] + [str(t["id"])]
+            else:
+                nd[t["name"]] = [str(t["id"])]
+
+    request.app.state.nd[str(repo.head.target)] = nd
+    return nd
 
 class Metadata(HTTPEndpoint):
     """
@@ -184,16 +204,8 @@ class Versions(HTTPEndpoint):
         """
         repo = Repository(REPO_HOME)
         p = request.path_params['path_to_file']
-        versions = {}
 
-        vd = cvd(repo, request)
-
-        for c in reversed(vd):
-            for t in vd[c]:
-                if t["name"] in versions:
-                    versions[t["name"]] = versions[t["name"]] + [str(t["id"])]
-                else:
-                    versions[t["name"]] = [str(t["id"])]
+        versions = cnd(repo, request)
 
         if self.scope.get("xu60.meta"):
             return JSONResponse({
@@ -236,4 +248,6 @@ routes = [
 ]
 
 app = Starlette(debug=True, routes=routes, lifespan=lifespan)
-app.state.vd = {}
+app.state.vd = {} # VERSIONS DIRECTORY
+app.state.od = {} # OBJECT DIRECTORY
+app.state.nd = {} # NAME DIRECTORY
