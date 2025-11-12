@@ -104,6 +104,32 @@ def cnd(repo, request):
     request.app.state.nd[str(repo.head.target)] = nd
     return nd
 
+def cod(repo, request):
+    """
+    Construct Object Directory (COD)
+    """
+
+    if str(repo.head.target) in request.app.state.od:
+        return request.app.state.od[str(repo.head.target)]
+
+    od = {}
+    vd = cvd(repo, request)
+
+    for c in reversed(vd):
+        for t in vd[c]:
+            item = {
+                "name": t["name"],
+                "commit_id": str(c),
+                "time": t["time"]
+            }
+            if t["id"] in od:
+                od[t["id"]] = od[t["id"]] + [item]
+            else:
+                od[t["id"]] = [item]
+
+    request.app.state.od[str(repo.head.target)] = od
+    return od
+
 class Metadata(HTTPEndpoint):
     """
     Metadata for the site
@@ -181,15 +207,14 @@ class Object(HTTPEndpoint):
         body = obj.data[start:end]
 
         if self.scope.get("xu60.meta"):
-            vd = cvd(repo, request)
-            cid = [c for c in reversed(vd) if oid in (v['id'] for v in vd[c])][0]
+            od = cod(repo, request)
             return JSONResponse({
                 "id": str(obj.id),
+                "names": od[obj.id],
                 "body": body.decode('utf-8'),
                 "length": obj.size - 1,
-                "window": {"start": start, "end": end},
-                "commit_id": str(cid),
-                "time": vd[cid][0]["time"]
+                "window": {"start": start, "end": end}
+                # TODO "changes @" -- start byte of each diff hunk
             })
         return Response(body, media_type='text/plain')
 
