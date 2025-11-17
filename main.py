@@ -1,6 +1,7 @@
 """
 Hopefully a single file server.
 """
+import re
 import datetime
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -14,8 +15,8 @@ from starlette.config import Config
 
 import pygit2
 from pygit2 import Repository
-from pygit2.enums import SortMode
-from pygit2.enums import ObjectType
+from pygit2.enums import SortMode, ObjectType
+
 
 config = Config(env_prefix='XU60_')
 
@@ -24,6 +25,8 @@ SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
 OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
+
+DIFFLINE = re.compile(r"\+(\d+),(\d+) ")
 
 @asynccontextmanager
 async def lifespan(app):
@@ -208,13 +211,31 @@ class Object(HTTPEndpoint):
 
         if self.scope.get("xu60.meta"):
             od = cod(repo, request)
+            nd = cnd(repo, request)
+            names = od[obj.id]
+
+            versions = [v for n in names for v in nd[n["name"]]]
+            i = versions.index(oid)
+            changes = []
+            if len(versions) > i + 1:
+                patch = repo.get(versions[i+1]).diff(obj)
+                for h in patch.hunks:
+                    m = DIFFLINE.search(h.header)
+                    startline = int(m[1]) - 1
+                    numlines = int(m[2])
+
+                    lines = obj.data.splitlines(keepends=True)
+                    prevbytes = sum(len(l) for l in lines[:startline])
+                    changebytes = sum(len(l) for l in lines[startline:startline+numlines])
+                    changes += [f"{prevbytes}/-/{prevbytes + changebytes}"]
+
             return JSONResponse({
                 "id": str(obj.id),
-                "names": od[obj.id],
+                "names": names,
                 "body": body.decode('utf-8'),
                 "length": obj.size - 1,
-                "window": {"start": start, "end": end}
-                # TODO "changes @" -- start byte of each diff hunk
+                "window": {"start": start, "end": end},
+                "changes": changes
             })
         return Response(body, media_type='text/plain')
 
