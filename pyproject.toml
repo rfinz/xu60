@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "xu60"
 version = "0.1.0"
 dependencies = [
-  "starlette~=0.50",
+  "starlette~=0.50.0",
   "pygit2~=1.19.0"
 ]
 requires-python = ">=3.11"
