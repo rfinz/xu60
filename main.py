@@ -183,12 +183,17 @@ class Directory(HTTPEndpoint):
         res = "object,time,name,length\n"
 
         vd = cvd(repo, request)
+        json = []
 
         for c in reversed(vd):
             for t in vd[c]:
-                res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
+                if self.scope.get("xu60.meta"):
+                    t["id"] = str(t["id"])
+                    json += [t]
+                else:
+                    res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
         if self.scope.get("xu60.meta"):
-            return JSONResponse({"body":res})
+            return JSONResponse(json)
         return Response(res, media_type='text/plain')
 
 
