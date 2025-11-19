@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xu60"
-version = "0.1.0"
+dynamic = ["version"]
 dependencies = [
   "starlette~=0.50.0",
   "pygit2~=1.19.0"
@@ -30,3 +30,5 @@ server = ["uvicorn"]
 [project.urls]
 Repository = "https://github.com/rfinz/xu60.git"
 
+[tool.hatch.version]
+path = "xu60/__init__.py"
