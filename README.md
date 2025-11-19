@@ -32,8 +32,8 @@ git clone https://github.com/rfinz/xu60.git #clone the repository
 cd xu60 #navigate into the project
 python -m venv env #create a virtual environment
 source env/bin/activate #activate the virtual environment
-pip install -r requirements.txt #install required dependencies
-uvicorn main:app #run the asgi application
+pip install -e . #install required dependencies and the xu60 application
+uvicorn xu60:app #run the asgi application -- you may need to install uvicorn separately
 # -> the demo should now be available at 127.0.0.1:8000
 ```
 
