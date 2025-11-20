@@ -22,9 +22,8 @@ for re-usable content, (mostly) guaranteed not to rot as a website grows, change
 
 ## demo and installation
 
-**xu60** comes with an SPA (built with htmx!! [under construction]) that serves as both a technical demonstration of the server's capabilities, proof-of-concept object browser, and tour of the server's own code.
+**xu60** comes with a demo application (built with htmx!! [under construction]) that serves as both a technical demonstration of the server's capabilities, proof-of-concept object browser, and tour of the server's own code.
 
-**xu60** is currently not packaged for distribution, and every aspect (including the project name) is subject to change as the project grows and changes
 
 ```sh
 # to run xu60 in its current state:
@@ -38,8 +37,8 @@ uvicorn xu60:app #run the asgi application -- you may need to install uvicorn se
 ```
 
 ## to do
-- [ ] finish demo SPA
-- [ ] package python application for distribution
+- [ ] finish demo web app
+- [x] package python application for distribution
 - [ ] re-write README to reflect the installation differences between a git based development install and using the package as a requirement for your own application
 - [ ] think of more to do
 

@@ -47,7 +47,15 @@ Instead, the contribution of **xu60** lies in the foregrounding of its non-techn
 
 Although the goals of the project are "non-technical," the execution must be rock solid. Response times matter when we use computers, and for **xu60** to be a viable medium for hypertext on the web, apps based on it must render smoothly and behave responsively. Practically, these concerns mean that complex calculations should be cached, roundtrips should be reduced (i.e. the tradeoff of payload size vs. extra HTTP requests should be considered carefully), and datatypes should err. on the side of immediately renderable. Decoding, munging, searching through text, etc. that is left for the client should be kept to a minimum (excepting of course the cases in which that is the *point* of the client). 
 
+The choice to champion hypertext and use other hypermedia technologies in the demonstration of **xu60** is somewhat at odds with the fact that **xu60** *does not render arbitrary hypermedia* and is intended to work with non-hypermedia repositories as well. The approach of bare **xu60** clearly violates certain REST principles as well as a constraint from the authors of [htmx](htmx.org):
 
+> #### [Scripting for Hypermedia](https://hypermedia.systems/client-side-scripting/#scripting-for-hypermedia)
+>Borrowing from Roy Fielding’s notion of “constraints” defining REST, we offer two constraints of hypermedia-friendly scripting. You are scripting in an HDA-compatible manner if the following two constraints are adhered to:
+> - *The main data format exchanged between server and client must be hypermedia, the same as it would be without scripting.*
+> - Client-side state, outside the DOM itself, is kept to a minimum.
+(emphasis mine)
+
+The central tension is that a complete hypermedia reveals its own affordances to a user; non-hypermedia content cannot speak for itself in the same way. The question for **xu60** is this: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
 
 
 
