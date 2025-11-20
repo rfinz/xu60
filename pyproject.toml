@@ -15,7 +15,7 @@ authors = [
 ]
 description = "an ideal backend"
 readme = "README.md"
-license = "GPLv3"
+license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 keywords = ["versioning", "hypertext", "web", "api", "content addressing"]
 classifiers = [
