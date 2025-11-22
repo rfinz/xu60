@@ -154,9 +154,12 @@ class Metadata(HTTPEndpoint):
         """
         host = request.headers['host']
         repo = Repository(REPO_HOME)
-        origin = repo.remotes["origin"].url
         head = repo.revparse_single('HEAD')
         meta = request.path_params.get('meta_url')
+        try:
+            origin = repo.remotes["origin"].url
+        except KeyError:
+            origin = "None"
 
         if meta:
             scope = dict(self.scope)
@@ -172,7 +175,10 @@ class Metadata(HTTPEndpoint):
             "site": f'{request.url.scheme}://{host}{request.url.path}',
             "origin": origin,
             "head": str(head.id),
-            "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time))
+            "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time)),
+            "meta": f"/{META_ROUTE}",
+            "object": f"/{OBJECT_ROUTE}",
+            "versions": f"/{VERSIONS_ROUTE}"
         })
 
 
