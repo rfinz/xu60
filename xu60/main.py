@@ -60,18 +60,21 @@ def cvd(repo, request):
     def construct(tree, commit, name=""):
         names = []
         for e in tree:
-            if e.id in prev:
+            p = f'{name}/{e.name}'[1:]
+            if e.id in prev and p in prev[e.id]:
                 pass
             else:
                 if e.type == ObjectType.BLOB:
-                    prev[e.id] = e.name
-                    p = f'{name}/{e.name}'[1:]
                     names += [
                         {"id": e.id,
                          "time": commit.commit_time,
                          "name": p,
                          "length": e.size - 1}
                     ]
+                    if e.id in prev:
+                        prev[e.id] += [p]
+                    else:
+                        prev[e.id] = [p]
                 if e.type == ObjectType.TREE:
                     names += construct(e, commit, name=f'{name}/{e.name}')
 
