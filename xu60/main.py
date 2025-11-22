@@ -40,9 +40,11 @@ async def lifespan(app):
 
     yield
 
+    used = pygit2.settings.cached_memory[0]
+    total = pygit2.settings.cached_memory[1]
     print(
         'libgit2 cache use: ' \
-        f'{pygit2.settings.cached_memory[0]}B of {pygit2.settings.cached_memory[1]}B'
+        f'{used/1024**2:.1f}MB of {total/1024**2:.1f}MB ({used/total*100:.1f}%)'
     )
     print('Shutdown')
 

@@ -24,9 +24,9 @@ for re-usable content, (mostly) guaranteed not to rot as a website grows, change
 
 **xu60** comes with a demo application (built with htmx!! [under construction]) that serves as both a technical demonstration of the server's capabilities, proof-of-concept object browser, and tour of the server's own code.
 
-
+### source
 ```sh
-# to run xu60 in its current state:
+# to run xu60 from its source:
 git clone https://github.com/rfinz/xu60.git #clone the repository
 cd xu60 #navigate into the project
 python -m venv env #create a virtual environment
@@ -35,6 +35,15 @@ pip install -e . #install required dependencies and the xu60 application
 uvicorn xu60:app #run the asgi application -- you may need to install uvicorn separately
 # -> the demo should now be available at 127.0.0.1:8000
 ```
+
+### pypi
+```sh
+# to run as a package:
+pip install xu60[server]
+cd <your git repo>
+uvicorn xu60:app 
+```
+
 
 ## to do
 - [ ] finish demo web app
