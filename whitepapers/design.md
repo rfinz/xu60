@@ -53,6 +53,7 @@ The choice to champion hypertext and use other hypermedia technologies in the de
 >Borrowing from Roy Fielding’s notion of “constraints” defining REST, we offer two constraints of hypermedia-friendly scripting. You are scripting in an HDA-compatible manner if the following two constraints are adhered to:
 > - *The main data format exchanged between server and client must be hypermedia, the same as it would be without scripting.*
 > - Client-side state, outside the DOM itself, is kept to a minimum.
+
 (emphasis mine)
 
 The central tension is that a complete hypermedia reveals its own affordances to a user; non-hypermedia content cannot speak for itself in the same way. The question for **xu60** is this: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*

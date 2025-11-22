@@ -13,7 +13,7 @@ requires-python = ">=3.11"
 authors = [
   {name = "Raymond Finzel", email = "github@rfinz.mozmail.com"},
 ]
-description = "an ideal backend"
+description = "needed now more than ever"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
