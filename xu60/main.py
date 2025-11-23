@@ -104,10 +104,15 @@ def cnd(repo, request):
 
     for c in reversed(vd):
         for t in vd[c]:
+            item = {
+                "id": str(t["id"]),
+                "commit_id": str(c),
+                "time": t["time"]
+            }
             if t["name"] in nd:
-                nd[t["name"]] = nd[t["name"]] + [str(t["id"])]
+                nd[t["name"]] += [item]
             else:
-                nd[t["name"]] = [str(t["id"])]
+                nd[t["name"]] = [item]
 
     request.app.state.nd[str(repo.head.target)] = nd
     return nd
@@ -131,7 +136,7 @@ def cod(repo, request):
                 "time": t["time"]
             }
             if t["id"] in od:
-                od[t["id"]] = od[t["id"]] + [item]
+                od[t["id"]] += [item]
             else:
                 od[t["id"]] = [item]
 
@@ -230,7 +235,7 @@ class Object(HTTPEndpoint):
             nd = cnd(repo, request)
             names = od[obj.id]
 
-            versions = [v for n in names for v in nd[n["name"]]]
+            versions = [v["id"] for n in names for v in nd[n["name"]]]
             i = versions.index(oid)
             changes = []
             if len(versions) > i + 1:
@@ -275,7 +280,7 @@ class Versions(HTTPEndpoint):
                 "versions": versions.get(p, [])
             })
 
-        res = "\n".join(versions.get(p,[])).rstrip()
+        res = "\n".join([x["id"] for x in versions.get(p,[])]).rstrip()
         return Response(res, media_type='text/plain')
 
 
