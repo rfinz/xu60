@@ -1,5 +1,5 @@
 # xu60
-an ideal backend
+needed now more than ever
 
 **xu60** is a 
 - Content-Addressable 

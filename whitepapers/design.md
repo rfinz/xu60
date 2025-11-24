@@ -10,6 +10,8 @@
 - The Dark Forest internet
 - the federated social internet
 
+## The Questions
+
 How does one extend the functionality of static websites in a way that
 1. brings them to life?
    - static websites have very little *conversation* to them
@@ -24,7 +26,7 @@ How does one extend the functionality of static websites in a way that
    - extensible(? what this means I'm not particularly sure, especially if I intend to keep the project under the GPL)
    - as few keywords/reserved words/concepts as possible
    - more options available, but "out of the way": you don't need to know about them in order to access all of the functionality of the extension
-   
+
 It seems to me that [htmx](https://htmx.org/) holds a piece of the solution: blur the lines between static and dynamic "web" "site" by making HTML into a ***true***, fully capable, hypertext.
    
 The other piece of the solution *may* lay *here*-- early conceptions of hypertext afforded significantly more granular levels of addressing. In the early days of computing this would have required incredibly specific sorts of data structures and algorithms to do it... now we have the compute to work rapidly with basically any text data.
@@ -56,9 +58,27 @@ The choice to champion hypertext and use other hypermedia technologies in the de
 
 (emphasis mine)
 
-The central tension is that a complete hypermedia reveals its own affordances to a user; non-hypermedia content cannot speak for itself in the same way. The question for **xu60** is this: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
+The central tension is that a complete hypermedia *reveals its own affordances* to a user; non-hypermedia content cannot speak for itself in the same way. The question for **xu60** is this: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
 
+To resolve the tension, we have to look at other implementations of hypermedia. In a "[xanalogical](https://www.xanadu.com.au/ted/XUsurvey/xuDation.html)" hypertext, the display of of the document contents is somewhat separated from the concerns of content order, durable linking, and transclusion (the display of contents from documents elsewhere on the web).
 
+>    Project Xanadu, the original hypertext project, is often misunderstood as an attempt to create the World Wide Web.
+>
+>    It has always been much more ambitious, proposing an entire form of literature where links do not break as versions change; where documents may be closely compared side by side and closely annotated; where it is possible to see the origins of every quotation; and in which there is a valid copyright system-- a literary, legal and business arrangement-- for frictionless, non-negotiated quotation at any time and in any amount.  The Web trivialized this original Xanadu model, vastly but incorrectly simplifying these problems to a world of fragile ever-breaking one-way links, with no recognition of change or copyright, and no support for multiple versions or principled re-use.  Fonts and glitz, rather than content connective structure, prevail.
+>
+>    Serious electronic literature (for scholarship, detailed controversy and detailed collaboration) must support bidirectional and profuse links, which cannot be embedded; and must offer facilities for easily tracking re-use on a principled basis among versions and quotations.
+>
+>    Xanalogical literary structure is a unique symmetrical connective system for text (and other separable media elements), with two complementary forms of connection that achieve these functions-- survivable deep linkage (content links) and recognizable, visible re-use (transclusion).  Both of these are easily implemented by a document model using content lists which reference stabilized media.
+>
+>    This system of literary structure offers uniquely integrated methods for version management, side-by-side comparison and visualizable re-use, which lead to a radically beneficial and principled copyright system (endorsed in principle by the ACM).  Though dauntingly far from the standards which have presently caught on, this design is still valid and may yet find a place in the evolving Internet universe.
+
+(from Project Xanadu, document linked above -- Copyright Theodor Holm Nelson)
+
+If it's not already obvious, **xu60** is an attempt to build web affordances that enable stabilized media and character-level addressing, the basic requirements of the Original Hypertext Project, plus the sort of discovery that enables the fonts, glitz, and front end scripting that our current hypermedia universe relies on.
+
+This is not a particularly novel idea, and I am not very smart. A quick glance at one of Ted Nelson's more recent [youtube videos](https://www.youtube.com/watch?v=72M5kcnAL-4) (that I am just now glancing at, FFS) reveals that 8+ years ago folks were already putting together the pieces and understanding that IPFS, version control, and certain blockchain technologies solve the problem of stabilized, versioned content.
+
+The question, then, remains as above: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
 
 
 
