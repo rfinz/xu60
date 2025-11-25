@@ -72,7 +72,7 @@ def cvd(repo, request):
                         {"id": e.id,
                          "time": commit.commit_time,
                          "name": p,
-                         "length": e.size - 1}
+                         "length": e.size}
                     ]
                     if e.id in prev:
                         prev[e.id] += [p]
@@ -230,7 +230,7 @@ class Object(HTTPEndpoint):
             raise HTTPException(status_code=404, detail="Not Found")
 
         start = request.path_params.get('start', 0)
-        end = request.path_params.get('end', obj.size - 1)
+        end = request.path_params.get('end', obj.size)
 
         body = obj.data[start:end]
 
@@ -258,7 +258,7 @@ class Object(HTTPEndpoint):
                 "id": str(obj.id),
                 "names": names,
                 "body": body.decode('utf-8'),
-                "length": obj.size - 1,
+                "length": obj.size,
                 "window": {"start": start, "end": end},
                 "changes": changes
             })
