@@ -44,10 +44,122 @@ cd <your git repo>
 uvicorn xu60:app 
 ```
 
+## the interface
+**xu60** exposes three read-only endpoints for interacting with content-addressed documents.
 
-## to do
-- [ ] finish demo web app
-- [x] package python application for distribution
-- [ ] re-write README to reflect the installation differences between a git based development install and using the package as a requirement for your own application
-- [ ] think of more to do
+the **xu60** interface is designed to be agnostic to back-end (not that they are [currently] swappable, but that there is nothing in principle stopping **xu60** from being based on another technology), but the current content-addressable object database is provided by [git](https://git-scm.com).
 
+### object
+this is the primary affordance of **xu60**: the object API delivers document data based on its content id. it also supports server-side slicing of the document to deliver only certain character ('utf-8') ranges.
+
+#### index
+`/object` -> a plaintext listing of all the available objects, an epoch (seconds) timestamp associated with each object's creation, object's reference name (for keeping track of versions), and length.
+
+> ```
+> GET /object
+>
+> object,time,name,length
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602
+> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720
+> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635
+> .
+> .
+> . (etc)
+> ```
+
+#### contents
+`/object/{object: str}` -> return the full contents of the document represented by the content id `object`
+
+> ```
+> GET /object/23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5
+>
+> """
+> Hopefully a single file server.
+> """
+> import re
+> import datetime
+> .
+> .
+> . (etc)
+> ```
+
+#### slicing
+`/object/{object: str}/{start: int}/-/{end: int}` -> contents between `start` and `end`
+`/object/{object: str}/{start: int}/-` -> contents between `start` and the end of the document
+`/object/{object: str}/-/{end: int}` -> contents between the beginning of the document and `end`
+
+> ```
+> GET /object/23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5/4/-/6
+> 
+> Ho
+> ```
+
+### versions
+the `versions` endpoint is the main way to query **xu60** about the presence of other document versions.
+
+#### index
+`/versions` -> a plaintext listing of all the available objects, an epoch (seconds) timestamp associated with each object's creation, object's reference name (for keeping track of versions), and length. this is currently *identical* to the listing created by the `object` endpoint.
+
+> ```
+> GET /versions
+>
+> object,time,name,length
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602
+> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720
+> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635
+> .
+> .
+> . (etc)
+> ```
+
+#### versions for name
+`/versions/{name: path}` -> return all versions for a given name (`name` is a path-like string). versions are listed newest to oldest.
+
+> ```
+> GET /versions/xu60/main.py
+> 
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50
+> 9c0229c95a31e68b2ee462144958d5cd8b086bbc
+> 4f447767d9769b488b5c8f09cf9aac8e3a63199c
+> 618c18287da9a58ab788f576489bc5e1fb5fb17b
+> 41448625864ff4b3e0893342d941972213a6392b
+> aeddd83401a4d616fed2d44b63c2ffb15c1e1d6b
+> ```
+
+#### time slicing
+just like the `object` interface allows for slicing the content by location inside the document, the `versions` interface allows slicing by *period in _time_. *
+
+`/versions/{name: path}/{start: int}/-/{end: int}` -> versions between `start` and `end` (epoch seconds)
+`/versions/{name: path}/{start: int}/-` -> versions between `start` and the end of time
+`/versions/{name: path}/-/{end: int}` -> versions between the beginning of time and `end`
+
+let's say we want to grab the versions of `xu60/main.py` mentioned in the truncated output of `/versions` above, plus anything newer, just in case there's a new version since this README was written.
+
+> ```
+> GET /versions/xu60/main.py/1764042716/-   # notice no end time
+> 
+> ee1b33e686015ba51b168111d12744abfa7ce1fd
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50
+> ```
+
+oh yeaaaa actually I did make a bugfix while writing this (ee1b33e686015ba51b168111d12744abfa7ce1fd)
+
+### meta
+the `meta` endpoint delivers a more complete set of machine-readable metadata in json format. besides the main meta entrypoint, `/meta` wraps and modifies object and version endpoints. this endpoint is changing rapidly so I am intentionally leaving the documentation more sparse.
+
+
+#### index
+`/meta` -> json containing site-level metadata.
+
+#### wraps
+`/meta/{object endpoint}` -> more metadata about objects
+`/meta/{versions endpoint}` -> more metadata about names and versions
+
+
+---
+
+**xu60** is still experimental and unstable :)
