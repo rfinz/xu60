@@ -49,7 +49,7 @@ Instead, the contribution of **xu60** lies in the foregrounding of its non-techn
 
 Although the goals of the project are "non-technical," the execution must be rock solid. Response times matter when we use computers, and for **xu60** to be a viable medium for hypertext on the web, apps based on it must render smoothly and behave responsively. Practically, these concerns mean that complex calculations should be cached, roundtrips should be reduced (i.e. the tradeoff of payload size vs. extra HTTP requests should be considered carefully), and datatypes should err. on the side of immediately renderable. Decoding, munging, searching through text, etc. that is left for the client should be kept to a minimum (excepting of course the cases in which that is the *point* of the client). 
 
-The choice to champion hypertext and use other hypermedia technologies in the demonstration of **xu60** is somewhat at odds with the fact that **xu60** *does not render arbitrary hypermedia* and is intended to work with non-hypermedia repositories as well. The approach of bare **xu60** clearly violates certain REST principles as well as a constraint from the authors of [htmx](htmx.org):
+The choice to champion hypertext and use other hypermedia technologies in the demonstration of **xu60** is somewhat at odds with the fact that **xu60** *does not render arbitrary hypermedia* and is intended to work with non-hypermedia repositories as well. The approach of bare **xu60** clearly violates certain REST principles as well as a constraint from the authors of [htmx](https://htmx.org):
 
 > #### [Scripting for Hypermedia](https://hypermedia.systems/client-side-scripting/#scripting-for-hypermedia)
 >Borrowing from Roy Fielding’s notion of “constraints” defining REST, we offer two constraints of hypermedia-friendly scripting. You are scripting in an HDA-compatible manner if the following two constraints are adhered to:
@@ -60,7 +60,7 @@ The choice to champion hypertext and use other hypermedia technologies in the de
 
 The central tension is that a complete hypermedia *reveals its own affordances* to a user; non-hypermedia content cannot speak for itself in the same way. The question for **xu60** is this: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
 
-To resolve the tension, we have to look at other implementations of hypermedia. In a "[xanalogical](https://www.xanadu.com.au/ted/XUsurvey/xuDation.html)" hypertext, the display of of the document contents is somewhat separated from the concerns of content order, durable linking, and transclusion (the display of contents from documents elsewhere on the web).
+To resolve the tension, we have to look at other implementations of hypermedia. In a "[xanalogical](https://www.xanadu.com.au/ted/XUsurvey/xuDation.html)" hypertext, the display of of the document contents is somewhat separated from the concerns of content order, durable linking, and transclusion (the display of contents from documents elsewhere on the web). That's not to say the display of the document and the revelation of hypermedia affordances is unimportant to a xanalogical hypermedia: much to the contrary. Xanalogical hypertext demands very specific guarantees about the presentation of its affordances, and as such strips away the server's role in presentation entirely, offloading the role of presentation entirely to a well specified client.
 
 >    Project Xanadu, the original hypertext project, is often misunderstood as an attempt to create the World Wide Web.
 >
@@ -74,12 +74,14 @@ To resolve the tension, we have to look at other implementations of hypermedia. 
 
 (from Project Xanadu, document linked above -- Copyright Theodor Holm Nelson)
 
-If it's not already obvious, **xu60** is an attempt to build web affordances that enable stabilized media and character-level addressing, the basic requirements of the Original Hypertext Project, plus the sort of discovery that enables the fonts, glitz, and front end scripting that our current hypermedia universe relies on.
+If it's not already obvious, **xu60** is an attempt to build web affordances on top of stabilized media and character-level addressing, which are the basic requirements of the Original Hypertext Project. By creating a standard interface for the web, and fleshing out a surface for scriptable document discovery, we enable the fonts, glitz, and front end experience that our current hypermedia universe relies on, and attempt to strike a (better?) balance between various conceptions of hypermedia.
 
 This is not a particularly novel idea, and I am not very smart. A quick glance at one of Ted Nelson's more recent [youtube videos](https://www.youtube.com/watch?v=72M5kcnAL-4) (that I am just now glancing at, FFS) reveals that 8+ years ago folks were already putting together the pieces and understanding that IPFS, version control, and certain blockchain technologies solve the problem of stabilized, versioned content.
 
 The question, then, remains as above: *what is the minimum viable data API that allows arbitrary text content to, at least in some sense, __become__ hypermedia?*
 
 
+## The Answers?
 
+???
 
