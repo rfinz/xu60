@@ -275,19 +275,48 @@ class Versions(HTTPEndpoint):
         """
         repo = Repository(REPO_HOME)
         p = request.path_params['path_to_file']
-
+        pp = Path(p).parts
         versions = cnd(repo, request)
-        try:
-            if self.scope.get("xu60.meta"):
-                return JSONResponse({
-                    "name": p,
-                    "versions": versions[p]
-                })
+        start = ""
+        end = ""
 
-            res = "\n".join([x["id"] for x in versions[p]]).rstrip()
-            return Response(res, media_type='text/plain')
+        if len(pp) > 2 and '-' in pp[-3:]:
+            tail = pp[-3:]
+            i = tail.index('-')
+            if len(pp) == 3 or i == 2 or not tail[0].isdigit():
+                p = str(Path(*pp[:-2]))
+                if i == 2:
+                    start = tail[1]
+                else:
+                    end = tail[2]
+            else:
+                start = tail[0]
+                end = tail[2]
+                p = str(Path(*pp[:-3]))
+
+        try:
+            versions = versions[p]
         except KeyError:
             raise HTTPException(status_code=404, detail="Not Found")
+
+        try:
+            if start:
+                start = int(start)
+                versions = [v for v in versions if v["time"] >= start]
+            if end:
+                end = int(end)
+                versions = [v for v in versions if v["time"] <= end]
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Non-Integer Time Index")
+
+        if self.scope.get("xu60.meta"):
+            return JSONResponse({
+                "name": p,
+                "versions": versions
+            })
+
+        res = "\n".join([x["id"] for x in versions]).rstrip()
+        return Response(res, media_type='text/plain')
 
 
 # RESERVED ROUTES: meta, object, versions
