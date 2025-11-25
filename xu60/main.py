@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from starlette.applications import Starlette
+from starlette.exceptions import HTTPException
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import Response, JSONResponse
 from starlette.routing import Route, Mount
@@ -223,7 +224,10 @@ class Object(HTTPEndpoint):
         """
         repo = Repository(REPO_HOME)
         oid = request.path_params['object']
-        obj = repo.get(oid)
+        try:
+            obj = repo.get(oid)
+        except ValueError:
+            raise HTTPException(status_code=404, detail="Not Found")
 
         start = request.path_params.get('start', 0)
         end = request.path_params.get('end', obj.size - 1)
@@ -273,15 +277,17 @@ class Versions(HTTPEndpoint):
         p = request.path_params['path_to_file']
 
         versions = cnd(repo, request)
+        try:
+            if self.scope.get("xu60.meta"):
+                return JSONResponse({
+                    "name": p,
+                    "versions": versions[p]
+                })
 
-        if self.scope.get("xu60.meta"):
-            return JSONResponse({
-                "name": p,
-                "versions": versions.get(p, [])
-            })
-
-        res = "\n".join([x["id"] for x in versions.get(p,[])]).rstrip()
-        return Response(res, media_type='text/plain')
+            res = "\n".join([x["id"] for x in versions[p]]).rstrip()
+            return Response(res, media_type='text/plain')
+        except KeyError:
+            raise HTTPException(status_code=404, detail="Not Found")
 
 
 # RESERVED ROUTES: meta, object, versions
