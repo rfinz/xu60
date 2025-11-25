@@ -94,7 +94,9 @@ this is the primary affordance of **xu60**: the object API delivers document dat
 
 #### slicing
 `/object/{object: str}/{start: int}/-/{end: int}` -> contents between `start` and `end`
+
 `/object/{object: str}/{start: int}/-` -> contents between `start` and the end of the document
+
 `/object/{object: str}/-/{end: int}` -> contents between the beginning of the document and `end`
 
 > ```
@@ -143,8 +145,11 @@ the `versions` endpoint is the main way to query **xu60** about the presence of 
 just like the `object` interface allows for slicing the content by location inside the document, the `versions` interface allows slicing by *period in _time_. *
 
 `/versions/{name: path}/{start: int}/-/{end: int}` -> versions between `start` and `end` (epoch seconds)
+
 `/versions/{name: path}/{start: int}/-` -> versions between `start` and the end of time
+
 `/versions/{name: path}/-/{end: int}` -> versions between the beginning of time and `end`
+
 
 let's say we want to grab the versions of `xu60/main.py` mentioned in the truncated output of `/versions` above, plus anything newer, just in case there's a new version since this README was written.
 
@@ -169,6 +174,7 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 
 #### wraps
 `/meta/{object endpoint}` -> more metadata about objects
+
 `/meta/{versions endpoint}` -> more metadata about names and versions
 
 ---
