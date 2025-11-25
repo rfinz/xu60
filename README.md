@@ -20,6 +20,9 @@ for re-usable content, (mostly) guaranteed not to rot as a website grows, change
 5. the "known technologies" that **xu60** relies on should (wherever possible) already be infrastructurally important to the web and unlikely to disappear or be deprecated with any rapidity
 6. **xu60** should be easy to run in a number of configurations to serve a number of applications--hypermedia-ing, mirroring, addressing, serving, distributing, archiving, auditing, etc.
 
+
+
+
 ## demo and installation
 
 **xu60** comes with a demo application (built with htmx!! [under construction]) that serves as both a technical demonstration of the server's capabilities, proof-of-concept object browser, and tour of the server's own code.
@@ -44,13 +47,18 @@ cd <your git repo>
 uvicorn xu60:app 
 ```
 
+
+
+
 ## the interface
 **xu60** exposes three read-only endpoints for interacting with content-addressed documents.
 
 the **xu60** interface is designed to be agnostic to back-end (not that they are [currently] swappable, but that there is nothing in principle stopping **xu60** from being based on another technology), but the current content-addressable object database is provided by [git](https://git-scm.com).
 
+---
+
 ### object
-this is the primary affordance of **xu60**: the object API delivers document data based on its content id. it also supports server-side slicing of the document to deliver only certain character ('utf-8') ranges.
+this is the primary affordance of **xu60**: the object API delivers document data based on its content id. it also supports server-side slicing of the document to deliver only requested character ('utf-8') ranges.
 
 #### index
 `/object` -> a plaintext listing of all the available objects, an epoch (seconds) timestamp associated with each object's creation, object's reference name (for keeping track of versions), and length.
@@ -94,6 +102,8 @@ this is the primary affordance of **xu60**: the object API delivers document dat
 > 
 > Ho
 > ```
+
+---
 
 ### versions
 the `versions` endpoint is the main way to query **xu60** about the presence of other document versions.
@@ -148,6 +158,8 @@ let's say we want to grab the versions of `xu60/main.py` mentioned in the trunca
 
 oh yeaaaa actually I did make a bugfix while writing this (ee1b33e686015ba51b168111d12744abfa7ce1fd)
 
+---
+
 ### meta
 the `meta` endpoint delivers a more complete set of machine-readable metadata in json format. besides the main meta entrypoint, `/meta` wraps and modifies object and version endpoints. this endpoint is changing rapidly so I am intentionally leaving the documentation more sparse.
 
@@ -159,7 +171,7 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 `/meta/{object endpoint}` -> more metadata about objects
 `/meta/{versions endpoint}` -> more metadata about names and versions
 
-
 ---
 
-**xu60** is still experimental and unstable :)
+> [!IMPORTANT]
+> **xu60** is still experimental and unstable :)
