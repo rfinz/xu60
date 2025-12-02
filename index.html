@@ -7,14 +7,26 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
 </head>
 <body>
-  <script type="text/hyperscript">
-   init fetch /versions/README.md then set $versions to result.trim().split("\n") then send ready(v:0) to the <div/> in me
-  </script>
-  <div _="on ready(v) fetch `/object/${$versions[v]}`
-          then put the result into the <pre/> in me">
-    <pre _="on click increment :x
-            then send ready(v::x) to the closest parent <div/>
-            if :x >= ($versions.length - 1) then set :x to -1"></pre>
+  <div hx-target="find <pre.output/>"
+       hx-swap="innerHTML"
+       class="ctainer"
+       data-xu60-name="README.md"
+  >
+    <pre _="init
+            set :x to 0
+            set :container to the closest parent <div.ctainer/>
+            set name to :container's @data-xu60-name
+            fetch `/versions/$name` then set :versions to result.trim().split('\n') then
+            fetch `/object/${:versions[0]}` then put the result into me
+            end
+            on mutation of childList increment :x then
+            set :container's @hx-get to `/object/${:versions[:x]}` then
+            put :container into container
+            js(container) htmx.process(container) end
+            if :x >= (:versions.length - 1) then set :x to -1"
+         class="output">
+
+    </pre>
   </div>
 </body>
 </html>
