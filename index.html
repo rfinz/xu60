@@ -3,13 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
-  HELLO WORLD,
-  <button hx-get="/object/5a601f9016bf38d33a64471b4d93e0fbb9265337/244/-/380" hx-swap="outerHTML">
-    Click Me
-  </button>
-  I'M OUT ~
+  <script type="text/hyperscript">
+   init fetch /versions/README.md then set $versions to result.trim().split("\n") then send ready(v:0) to the <div/> in me
+  </script>
+  <div _="on ready(v) fetch `/object/${$versions[v]}`
+          then put the result into the <pre/> in me">
+    <pre _="on click increment :x
+            then send ready(v::x) to the closest parent <div/>
+            if :x >= ($versions.length - 1) then set :x to -1"></pre>
+  </div>
 </body>
 </html>
