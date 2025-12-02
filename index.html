@@ -1,32 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
-</head>
-<body>
-  <div hx-target="find <pre.output/>"
-       hx-swap="innerHTML"
-       class="ctainer"
-       data-xu60-name="README.md"
-  >
-    <pre _="init
-            set :x to 0
-            set :container to the closest parent <div.ctainer/>
-            set name to :container's @data-xu60-name
-            fetch `/versions/$name` then set :versions to result.trim().split('\n') then
-            fetch `/object/${:versions[0]}` then put the result into me
-            end
-            on mutation of childList increment :x then
-            set :container's @hx-get to `/object/${:versions[:x]}` then
-            put :container into container
-            js(container) htmx.process(container) end
-            if :x >= (:versions.length - 1) then set :x to -1"
-         class="output">
+  </head>
+  <body>
+    <div hx-target="find <pre.output/>"
+         hx-swap="innerHTML"
+         class="ctainer"
+         data-xu60-name="README.md"
+    >
+      <pre _="init
+              set :x to 0
+              set :container to the closest parent <div.ctainer/>
+              set name to :container's @data-xu60-name
+              fetch `/versions/$name` then set :versions to result.trim().split('\n') then
+              fetch `/object/${:versions[0]}` then put the result into me
+              end
+              on mutation of childList increment :x then
+              set :container's @hx-get to `/object/${:versions[:x]}` then
+              put :container into container
+              js(container) htmx.process(container) end
+              if :x >= (:versions.length - 1) then set :x to -1"
+           class="output">
 
-    </pre>
-  </div>
-</body>
+      </pre>
+    </div>
+  </body>
 </html>
