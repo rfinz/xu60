@@ -226,7 +226,10 @@ class Object(HTTPEndpoint):
         oid = request.path_params['object']
         try:
             obj = repo.get(oid)
-        except ValueError:
+        except ValueError as e:
+            raise HTTPException(status_code=404, detail="Not Found") from e
+
+        if obj.type != ObjectType.BLOB:
             raise HTTPException(status_code=404, detail="Not Found")
 
         start = request.path_params.get('start', 0)
@@ -296,8 +299,8 @@ class Versions(HTTPEndpoint):
 
         try:
             versions = versions[p]
-        except KeyError:
-            raise HTTPException(status_code=404, detail="Not Found")
+        except KeyError as e:
+            raise HTTPException(status_code=404, detail="Not Found") from e
 
         try:
             if start:
@@ -306,8 +309,8 @@ class Versions(HTTPEndpoint):
             if end:
                 end = int(end)
                 versions = [v for v in versions if v["time"] <= end]
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Non-Integer Time Index")
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail="Non-Integer Time Index") from e
 
         if self.scope.get("xu60.meta"):
             return JSONResponse({
