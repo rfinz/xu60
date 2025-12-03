@@ -1,7 +1,6 @@
 """
 Hopefully a single file server.
 """
-import re
 import datetime
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -27,7 +26,6 @@ OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
 
-DIFFLINE = re.compile(r"\+(\d+),(\d+) ")
 
 @asynccontextmanager
 async def lifespan(app):
