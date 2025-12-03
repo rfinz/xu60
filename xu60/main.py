@@ -242,8 +242,14 @@ class Object(HTTPEndpoint):
 
             versions = [v["id"] for n in names for v in nd[n["name"]]]
             i = versions.index(oid)
-            changes = []
+            previous_version = {}
+            next_version = {}
+            if i > 0:
+                next_version["id"] = str(versions[i-1])
             if len(versions) > i + 1:
+                previous_version["id"] = str(versions[i+1])
+                previous_version["changes"] = []
+
                 patch = repo.get(versions[i+1]).diff(
                     obj,
                     flags=DiffOption.PATIENCE|DiffOption.MINIMAL,
@@ -251,12 +257,25 @@ class Object(HTTPEndpoint):
                 )
 
                 for h in patch.hunks:
-                    lines = [l for l in h.lines if l.origin == '+']
-                    if lines:
-                        soff = lines[0].content_offset
-                        eoff = lines[-1].content_offset + len(h.lines[-1].content)
+                    tlines = [l for l in h.lines if l.origin == '+'] # to lines
+                    flines = [l for l in h.lines if l.origin == '-'] # from lines
 
-                        changes += [f"{soff}/-/{eoff}"]
+                    if tlines:
+                        t_soff = tlines[0].content_offset
+                        t_eoff = tlines[-1].content_offset + len(tlines[-1].content)
+                    else:
+                        t_soff = t_eoff = h.lines[0].content_offset
+
+                    if flines:
+                        f_soff = flines[0].content_offset
+                        f_eoff = flines[-1].content_offset + len(flines[-1].content)
+                    else:
+                        f_soff = f_eoff = h.lines[0].content_offset
+
+                    previous_version["changes"] = previous_version["changes"] + [{
+                        "from": f"{f_soff}/-/{f_eoff}",
+                        "to": f"{t_soff}/-/{t_eoff}"
+                    }]
 
             return JSONResponse({
                 "id": str(obj.id),
@@ -264,7 +283,8 @@ class Object(HTTPEndpoint):
                 "body": body.decode('utf-8'),
                 "length": obj.size,
                 "window": {"start": start, "end": end},
-                "changes": changes
+                "previous_version": previous_version,
+                "next_version": next_version
             })
         return Response(body, media_type='text/plain')
 
