@@ -253,11 +253,12 @@ class Object(HTTPEndpoint):
                 )
 
                 for h in patch.hunks:
-                    print([o.origin for o in h.lines])
-                    soff = h.lines[0].content_offset
-                    eoff = h.lines[-1].content_offset + len(h.lines[-1].content)
+                    lines = [l for l in h.lines if l.origin == '+']
+                    if lines:
+                        soff = lines[0].content_offset
+                        eoff = lines[-1].content_offset + len(h.lines[-1].content)
 
-                    changes += [f"{soff}/-/{eoff}"]
+                        changes += [f"{soff}/-/{eoff}"]
 
             return JSONResponse({
                 "id": str(obj.id),
