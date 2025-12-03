@@ -16,7 +16,7 @@ from starlette.config import Config
 
 import pygit2
 from pygit2 import Repository
-from pygit2.enums import SortMode, ObjectType
+from pygit2.enums import SortMode, ObjectType, DiffOption
 
 
 config = Config(env_prefix='XU60_')
@@ -246,16 +246,18 @@ class Object(HTTPEndpoint):
             i = versions.index(oid)
             changes = []
             if len(versions) > i + 1:
-                patch = repo.get(versions[i+1]).diff(obj)
-                for h in patch.hunks:
-                    m = DIFFLINE.search(h.header)
-                    startline = int(m[1]) - 1
-                    numlines = int(m[2])
+                patch = repo.get(versions[i+1]).diff(
+                    obj,
+                    flags=DiffOption.PATIENCE|DiffOption.MINIMAL,
+                    context_lines=0
+                )
 
-                    lines = obj.data.splitlines(keepends=True)
-                    prevbytes = sum(len(l) for l in lines[:startline])
-                    changebytes = sum(len(l) for l in lines[startline:startline+numlines])
-                    changes += [f"{prevbytes}/-/{prevbytes + changebytes}"]
+                for h in patch.hunks:
+                    print([o.origin for o in h.lines])
+                    soff = h.lines[0].content_offset
+                    eoff = h.lines[-1].content_offset + len(h.lines[-1].content)
+
+                    changes += [f"{soff}/-/{eoff}"]
 
             return JSONResponse({
                 "id": str(obj.id),
