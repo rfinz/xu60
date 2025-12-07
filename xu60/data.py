@@ -98,6 +98,37 @@ def cod(repo, request):
     return od
 
 
+def changes(v1, v2):
+    c = []
+    patch = v1.diff(
+        v2,
+        flags=DiffOption.PATIENCE|DiffOption.MINIMAL,
+        context_lines=0
+    )
+
+    for h in patch.hunks:
+        tlines = [l for l in h.lines if l.origin == '+'] # to lines
+        flines = [l for l in h.lines if l.origin == '-'] # from lines
+
+        if tlines:
+            t_soff = tlines[0].content_offset
+            t_eoff = tlines[-1].content_offset + len(tlines[-1].content)
+        else:
+            t_soff = t_eoff = h.lines[0].content_offset
+
+        if flines:
+            f_soff = flines[0].content_offset
+            f_eoff = flines[-1].content_offset + len(flines[-1].content)
+        else:
+            f_soff = f_eoff = h.lines[0].content_offset
+
+        c += [{
+            "from": f"{f_soff}/-/{f_eoff}",
+            "to": f"{t_soff}/-/{t_eoff}"
+        }]
+
+    return c
+
 def changeset(obj, repo, request):
     """
     produce changeset for a give BLOB, repo, and request
@@ -112,35 +143,9 @@ def changeset(obj, repo, request):
     next_version = {}
     if i > 0:
         next_version["id"] = str(versions[i-1])
+        next_version["changes"] = changes(obj, repo.get(versions[i-1]))
     if len(versions) > i + 1:
         previous_version["id"] = str(versions[i+1])
-        previous_version["changes"] = []
-
-        patch = repo.get(versions[i+1]).diff(
-            obj,
-            flags=DiffOption.PATIENCE|DiffOption.MINIMAL,
-            context_lines=0
-        )
-
-        for h in patch.hunks:
-            tlines = [l for l in h.lines if l.origin == '+'] # to lines
-            flines = [l for l in h.lines if l.origin == '-'] # from lines
-
-            if tlines:
-                t_soff = tlines[0].content_offset
-                t_eoff = tlines[-1].content_offset + len(tlines[-1].content)
-            else:
-                t_soff = t_eoff = h.lines[0].content_offset
-
-            if flines:
-                f_soff = flines[0].content_offset
-                f_eoff = flines[-1].content_offset + len(flines[-1].content)
-            else:
-                f_soff = f_eoff = h.lines[0].content_offset
-
-            previous_version["changes"] = previous_version["changes"] + [{
-                "from": f"{f_soff}/-/{f_eoff}",
-                "to": f"{t_soff}/-/{t_eoff}"
-            }]
+        previous_version["changes"] = changes(repo.get(versions[i+1]), obj)
 
     return names, previous_version, next_version
