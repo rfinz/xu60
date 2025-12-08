@@ -1,3 +1,8 @@
+"""
+xu60 functionality related to building and maintaining in-memory
+data structures
+"""
+
 from pygit2.enums import SortMode, ObjectType, DiffOption
 
 def cvd(repo, request):
@@ -99,6 +104,9 @@ def cod(repo, request):
 
 
 def changes(v1, v2):
+    """
+    Get minimal diff for two text blobs.
+    """
     c = []
     patch = v1.diff(
         v2,
@@ -129,6 +137,7 @@ def changes(v1, v2):
 
     return c
 
+
 def changeset(obj, repo, request):
     """
     produce changeset for a give BLOB, repo, and request
@@ -142,10 +151,25 @@ def changeset(obj, repo, request):
     previous_version = {}
     next_version = {}
     if i > 0:
-        next_version["id"] = str(versions[i-1])
-        next_version["changes"] = changes(obj, repo.get(versions[i-1]))
+        next_obj = repo.get(versions[i-1])
+        next_version["id"] = str(next_obj.id)
+        try:
+            next_version["changes"] = \
+                request.app.state.cd[f"{obj.id}->{next_obj.id}"]
+        except KeyError:
+            next_version["changes"] = \
+                request.app.state.cd[f"{obj.id}->{next_obj.id}"] = \
+                changes(obj, next_obj)
+
     if len(versions) > i + 1:
-        previous_version["id"] = str(versions[i+1])
-        previous_version["changes"] = changes(repo.get(versions[i+1]), obj)
+        prev_obj = repo.get(versions[i+1])
+        previous_version["id"] = str(prev_obj.id)
+        try:
+            previous_version["changes"] = \
+                request.app.state.cd[f"{prev_obj.id}->{obj.id}"]
+        except KeyError:
+            previous_version["changes"] = \
+                request.app.state.cd[f"{prev_obj.id}->{obj.id}"] = \
+                changes(prev_obj, obj)
 
     return names, previous_version, next_version

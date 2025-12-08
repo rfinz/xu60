@@ -245,3 +245,4 @@ app = Starlette(debug=True, routes=routes, lifespan=lifespan)
 app.state.vd = {} # VERSIONS DIRECTORY
 app.state.od = {} # OBJECT DIRECTORY
 app.state.nd = {} # NAME DIRECTORY
+app.state.cd = {} # CHANGE DIRECTORY
