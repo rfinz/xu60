@@ -85,5 +85,20 @@ The question, then, remains as above: *what is the minimum viable data API that 
 
 ## The Answers?
 
-???
+In Ted Nelson's PhD. Dissertation, "The Philosophy of Hypertext" he calls out:
+> - INTERCOMPARISON
+> - VERSIONS
+> - MARGINAL NOTES
+> - DIFFERENT DOCUMENTS
+
+and
+
+> - PARALLEL DOCUMENTS
+
+as the substructed elements of his conception of hypertext. Specifically, "PARALLEL DOCUMENTS" supersedes the other list items as the primary technological concern. Looking at this list, and thinking about git's capabilities....I see a problem of presentation, not a problem of technical capability. 
+
+Ted (can i call u ted) actually specifically calls out modern version control software as containing processes that mirror, in some way, his original ideas (though he is just as quick to remind the reader that the interface of version control is arcane and hardly targeted at a general audience or an audience of creatives). Because of this it is unsurprising that a view logic layer built on top of git would be able to provide the majority of infrastructure that **xu60** requires. If there is a "curse" of Xanadu® it may be this: during the only time period in which it was being developed, the technical concerns dominated the development efforts. Datastructures, addressing systems, windowing....all these seem to engage developer efforts for many years. In this, the year End of 2025, compute has rendered most of these concerns obsolete (though not without value, as the design documents have proven delightful companions throughout the implementation process). Instead, now, we have the low level protocols mapped and identified, and it is up to developers to harness those protocols in service of truly distributed, transpointable, stabilized, documents.
+
+Where Ted's design had [tumbler addresses](https://web.archive.org/web/20021230190017/http://udanax.com/green/febe/tumblers.html) (a sort of numeric cataloging of the web, somewhere between IP addresses, the Dewey Decimal System, and Semantic Versioning--**xu60** relies on a mixture of DNS and content addressing. Where Ted's clients would have no choice but to transclude data from it's source, **xu60** relies on asynchronous loads in standard web pages, that are vetted by the server user to be appropriate. It is a far cry from the "every client must be xanalogical" future that Ted believed in, but it does have many distinct advantages.
+
 
