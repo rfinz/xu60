@@ -15,7 +15,7 @@ from starlette.config import Config
 
 import pygit2
 from pygit2 import Repository
-from pygit2.enums import SortMode, ObjectType, DiffOption
+from pygit2.enums import ObjectType
 
 from xu60.data import cvd, cnd, changeset
 
@@ -87,6 +87,8 @@ class Metadata(HTTPEndpoint):
             "origin": origin,
             "head": str(head.id),
             "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time)),
+            "content_id": "sha1", #placeholder -- should be calculated from the object database
+            "mirrors": [], #placeholder -- should be specified in config
             "meta": f"/{META_ROUTE}",
             "object": f"/{OBJECT_ROUTE}",
             "versions": f"/{VERSIONS_ROUTE}"
