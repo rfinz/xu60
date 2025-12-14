@@ -14,10 +14,9 @@ from starlette.staticfiles import StaticFiles
 from starlette.config import Config
 
 import pygit2
-from pygit2 import Repository
 from pygit2.enums import ObjectType
 
-from xu60.data import cvd, cnd, changeset
+from xu60.data import cvd, cnd, changeset, SuperRepo
 
 config = Config(env_prefix='XU60_')
 
@@ -64,7 +63,7 @@ class Metadata(HTTPEndpoint):
         otherwise return JSON metadata for the entire repo.
         """
         host = request.headers['host']
-        repo = Repository(REPO_HOME)
+        repo = SuperRepo(REPO_HOME)
         head = repo.revparse_single('HEAD')
         meta = request.path_params.get('meta_url')
         try:
@@ -103,7 +102,7 @@ class Directory(HTTPEndpoint):
         """
         Send version directory, one entry per blob object in the tree.
         """
-        repo = Repository(REPO_HOME)
+        repo = SuperRepo(REPO_HOME)
         res = "object,time,name,length\n"
 
         vd = cvd(repo, request)
@@ -129,14 +128,14 @@ class Object(HTTPEndpoint):
         """
         Send object contents, with allowable URL pattern for selecting bytes.
         """
-        repo = Repository(REPO_HOME)
+        repo = SuperRepo(REPO_HOME)
         oid = request.path_params['object']
         try:
             obj = repo.get(oid)
         except ValueError as e:
             raise HTTPException(status_code=404, detail="Not Found") from e
 
-        if obj.type != ObjectType.BLOB:
+        if not obj or obj.type != ObjectType.BLOB:
             raise HTTPException(status_code=404, detail="Not Found")
 
         start = request.path_params.get('start', 0)
@@ -167,7 +166,7 @@ class Versions(HTTPEndpoint):
         """
         Send version IDs in reverse order (newest first)
         """
-        repo = Repository(REPO_HOME)
+        repo = SuperRepo(REPO_HOME)
         p = request.path_params['path_to_file']
         pp = Path(p).parts
         versions = cnd(repo, request)

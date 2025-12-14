@@ -3,6 +3,7 @@ xu60 functionality related to building and maintaining in-memory
 data structures
 """
 
+from pygit2 import Repository
 from pygit2.enums import SortMode, ObjectType, DiffOption
 
 def cvd(repo, request):
@@ -16,10 +17,10 @@ def cvd(repo, request):
     prev = {}
     vd = {}
 
-    def construct(tree, commit, name=""):
+    def construct(tree, commit, prefix="", name=""):
         names = []
         for e in tree:
-            p = f'{name}/{e.name}'[1:]
+            p = f'{prefix}{name}/{e.name}'[1:]
             if e.id in prev and p in prev[e.id]:
                 pass
             else:
@@ -35,7 +36,7 @@ def cvd(repo, request):
                     else:
                         prev[e.id] = [p]
                 if e.type == ObjectType.TREE:
-                    names += construct(e, commit, name=f'{name}/{e.name}')
+                    names += construct(e, commit, prefix=prefix, name=f'{name}/{e.name}')
 
         return names
 
@@ -44,6 +45,14 @@ def cvd(repo, request):
             SortMode.TOPOLOGICAL | SortMode.TIME | SortMode.REVERSE
     ):
         vd[commit.id] = construct(commit.tree, commit)
+
+    for sub in repo.listall_submodules():
+        r = Repository(sub)
+        for commit in r.walk(
+                r.head.target,
+                SortMode.TOPOLOGICAL | SortMode.TIME | SortMode.REVERSE
+        ):
+            vd[commit.id] = construct(commit.tree, commit, prefix="/" + sub)
 
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
@@ -173,3 +182,27 @@ def changeset(obj, repo, request):
                 changes(prev_obj, obj)
 
     return names, previous_version, next_version
+
+
+class SuperRepo(Repository):
+    def __init__(self, *args, **kwargs):
+        Repository.__init__(self, *args, **kwargs)
+
+    def recurse(self, oid, repo=None):
+        obj = None
+        if repo:
+            obj = repo.get(oid)
+        else:
+            obj = super().get(oid)
+
+        for sub in self.listall_submodules():
+            if obj:
+                return obj
+            r = Repository(sub)
+            return self.recurse(oid, repo=r)
+        return obj
+
+
+    def get(self, oid):
+        return self.recurse(oid)
+
