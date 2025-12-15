@@ -41,19 +41,21 @@ def cvd(repo, request):
 
         return names
 
+    for sub in repo.submodules:
+        r = sub.open()
+        for commit in r.walk(
+                r.head.target,
+                SortMode.TOPOLOGICAL | SortMode.TIME | SortMode.REVERSE
+        ):
+            vd[commit.id] = construct(commit.tree, commit, prefix="/" + sub.path)
+        r.free()
+
     for commit in repo.walk(
             repo.head.target,
             SortMode.TOPOLOGICAL | SortMode.TIME | SortMode.REVERSE
     ):
         vd[commit.id] = construct(commit.tree, commit)
 
-    for sub in repo.listall_submodules():
-        r = Repository(sub)
-        for commit in r.walk(
-                r.head.target,
-                SortMode.TOPOLOGICAL | SortMode.TIME | SortMode.REVERSE
-        ):
-            vd[commit.id] = construct(commit.tree, commit, prefix="/" + sub)
 
     request.app.state.vd[str(repo.head.target)] = vd
     return vd
@@ -206,10 +208,10 @@ class SuperRepo(Repository):
         else:
             obj = super().get(oid)
 
-        for sub in self.listall_submodules():
+        for sub in self.submodules:
             if obj:
                 return obj
-            r = Repository(sub)
+            r = sub.open()
             return self.recurse(oid, repo=r)
         return obj
 
@@ -219,3 +221,7 @@ class SuperRepo(Repository):
         recurse into submodules, if present
         """
         return self.recurse(oid)
+
+
+    def walk(self, *args, **kwargs):
+        return super().walk(*args, **kwargs)
