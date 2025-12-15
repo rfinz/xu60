@@ -29,7 +29,8 @@ def cvd(repo, request):
                         {"id": e.id,
                          "time": commit.commit_time,
                          "name": p,
-                         "length": e.size}
+                         "length": e.size,
+                         "message": commit.message}
                     ]
                     if e.id in prev:
                         prev[e.id] += [p]
@@ -74,7 +75,8 @@ def cnd(repo, request):
             item = {
                 "id": str(t["id"]),
                 "commit_id": str(c),
-                "time": t["time"]
+                "time": t["time"],
+                "message": t["message"]
             }
             if t["name"] in nd:
                 nd[t["name"]] += [item]
@@ -101,7 +103,8 @@ def cod(repo, request):
             item = {
                 "name": t["name"],
                 "commit_id": str(c),
-                "time": t["time"]
+                "time": t["time"],
+                "message": t["message"]
             }
             if t["id"] in od:
                 od[t["id"]] += [item]
