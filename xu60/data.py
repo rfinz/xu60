@@ -185,10 +185,18 @@ def changeset(obj, repo, request):
 
 
 class SuperRepo(Repository):
+    """
+    Custom pygit2.Repository class that implements functions to
+    facilitate working recursively with git submodules.
+    """
     def __init__(self, *args, **kwargs):
         Repository.__init__(self, *args, **kwargs)
 
     def recurse(self, oid, repo=None):
+        """
+        utility function to descend into submodules, should return
+        first match for an oid
+        """
         obj = None
         if repo:
             obj = repo.get(oid)
@@ -204,5 +212,7 @@ class SuperRepo(Repository):
 
 
     def get(self, oid):
+        """
+        recurse into submodules, if present
+        """
         return self.recurse(oid)
-
