@@ -212,7 +212,8 @@ class SuperRepo(Repository):
             if obj:
                 return obj
             r = sub.open()
-            return self.recurse(oid, repo=r)
+            obj = self.recurse(oid, repo=r)
+            r.free()
         return obj
 
 
