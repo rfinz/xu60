@@ -38,7 +38,11 @@ async def lifespan(app):
     pygit2.settings.cache_max_size(512 * 1024**2)
     pygit2.settings.cache_object_limit(ObjectType.BLOB, 512 * 1024)
 
-    app.state.repo = SuperRepo(REPO_HOME)
+    app.state.repo = SuperRepo(REPO_HOME) # main repo
+    app.state.vd = {} # VERSIONS DIRECTORY
+    app.state.od = {} # OBJECT DIRECTORY
+    app.state.nd = {} # NAME DIRECTORY
+    app.state.cd = {} # CHANGE DIRECTORY
 
     for mirror in MIRRORS:
         try:
@@ -256,7 +260,3 @@ routes = [
 ]
 
 app = Starlette(debug=True, routes=routes, lifespan=lifespan)
-app.state.vd = {} # VERSIONS DIRECTORY
-app.state.od = {} # OBJECT DIRECTORY
-app.state.nd = {} # NAME DIRECTORY
-app.state.cd = {} # CHANGE DIRECTORY
