@@ -25,6 +25,7 @@ SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
 OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
+MIRRORS = config("MIRRORS", default=[])
 
 
 @asynccontextmanager
@@ -37,6 +38,17 @@ async def lifespan(app):
     pygit2.settings.cache_max_size(512 * 1024**2)
     pygit2.settings.cache_object_limit(ObjectType.BLOB, 512 * 1024)
 
+    app.state.repo = SuperRepo(REPO_HOME)
+
+    for mirror in MIRRORS:
+        try:
+            app.state.repo.submodules.add(mirror["url"], mirror["path"])
+        except ValueError as e:
+            print(e)
+
+
+    app.state.repo.submodules.cache_all()
+
     yield
 
     used = pygit2.settings.cached_memory[0]
@@ -45,6 +57,7 @@ async def lifespan(app):
         'libgit2 cache use: ' \
         f'{used/1024**2:.1f}MB of {total/1024**2:.1f}MB ({used/total*100:.1f}%)'
     )
+    app.state.repo.free()
     print('Shutdown')
 
 
@@ -63,7 +76,7 @@ class Metadata(HTTPEndpoint):
         otherwise return JSON metadata for the entire repo.
         """
         host = request.headers['host']
-        repo = SuperRepo(REPO_HOME)
+        repo = request.app.state.repo
         head = repo.revparse_single('HEAD')
         meta = request.path_params.get('meta_url')
         try:
@@ -102,7 +115,7 @@ class Directory(HTTPEndpoint):
         """
         Send version directory, one entry per blob object in the tree.
         """
-        repo = SuperRepo(REPO_HOME)
+        repo = request.app.state.repo
         res = "object,time,name,length\n"
 
         vd = cvd(repo, request)
@@ -128,7 +141,7 @@ class Object(HTTPEndpoint):
         """
         Send object contents, with allowable URL pattern for selecting bytes.
         """
-        repo = SuperRepo(REPO_HOME)
+        repo = request.app.state.repo
         oid = request.path_params['object']
         try:
             obj = repo.get(oid)
@@ -166,7 +179,7 @@ class Versions(HTTPEndpoint):
         """
         Send version IDs in reverse order (newest first)
         """
-        repo = SuperRepo(REPO_HOME)
+        repo = request.app.state.repo
         p = request.path_params['path_to_file']
         pp = Path(p).parts
         versions = cnd(repo, request)
