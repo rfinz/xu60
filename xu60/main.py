@@ -25,7 +25,7 @@ SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
 OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
-MIRRORS = config("MIRRORS", default=[])
+MIRRORS = config("MIRRORS", default={})
 
 
 @asynccontextmanager
@@ -43,15 +43,21 @@ async def lifespan(app):
     app.state.od = {} # OBJECT DIRECTORY
     app.state.nd = {} # NAME DIRECTORY
     app.state.cd = {} # CHANGE DIRECTORY
+    app.state.mirrors = MIRRORS.copy()
 
-    for mirror in MIRRORS:
+    repo = app.state.repo
+
+    for path, url in app.state.mirrors.items():
         try:
-            app.state.repo.submodules.add(mirror["url"], mirror["path"])
+            repo.submodules.add(url, path)
         except ValueError as e:
             print(e)
 
+    for sub in repo.submodules:
+        if not sub.path in app.state.mirrors:
+            app.state.mirrors[sub.path] = sub.url
 
-    app.state.repo.submodules.cache_all()
+    repo.submodules.cache_all()
 
     yield
 
@@ -61,7 +67,7 @@ async def lifespan(app):
         'libgit2 cache use: ' \
         f'{used/1024**2:.1f}MB of {total/1024**2:.1f}MB ({used/total*100:.1f}%)'
     )
-    app.state.repo.free()
+    repo.free()
     print('Shutdown')
 
 
@@ -104,7 +110,7 @@ class Metadata(HTTPEndpoint):
             "head": str(head.id),
             "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time)),
             "content_id": "sha1", #placeholder -- should be calculated from the object database
-            "mirrors": [], #placeholder -- should be specified in config
+            "mirrors": request.app.state.mirrors,
             "meta": f"/{META_ROUTE}",
             "object": f"/{OBJECT_ROUTE}",
             "versions": f"/{VERSIONS_ROUTE}"
