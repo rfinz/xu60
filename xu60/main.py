@@ -171,20 +171,24 @@ class Object(HTTPEndpoint):
         start = request.path_params.get('start', 0)
         end = request.path_params.get('end', size)
 
-        body = body[start:end]
+        body = "" if "nobody" in request.query_params else body[start:end]
 
         if self.scope.get("xu60.meta"):
             names, previous_version, next_version = changeset(obj, repo, request)
 
-            return JSONResponse({
+            resp = {
                 "id": str(obj.id),
                 "names": names,
-                "body": body,
                 "length": size,
                 "window": {"start": start, "end": end},
                 "previous_version": previous_version,
                 "next_version": next_version
-            })
+            }
+            if not obj.is_binary and body:
+                resp["body"] = body
+
+            return JSONResponse(resp)
+
         return Response(body, media_type='text/plain')
 
 
