@@ -126,7 +126,7 @@ class Directory(HTTPEndpoint):
         Send version directory, one entry per blob object in the tree.
         """
         repo = request.app.state.repo
-        res = "object,time,name,length\n"
+        res = "object,time,name,length,type\n"
 
         vd = cvd(repo, request)
         json = []
@@ -137,7 +137,7 @@ class Directory(HTTPEndpoint):
                     t["id"] = str(t["id"])
                     json += [t]
                 else:
-                    res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]}\n'
+                    res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]},{t["type"]}\n'
         if self.scope.get("xu60.meta"):
             return JSONResponse(json)
         return Response(res, media_type='text/plain')
@@ -161,10 +161,13 @@ class Object(HTTPEndpoint):
         if not obj or obj.type != ObjectType.BLOB:
             raise HTTPException(status_code=404, detail="Not Found")
 
-        start = request.path_params.get('start', 0)
-        end = request.path_params.get('end', obj.size)
+        body = obj.data.decode('utf-8')
+        size = len(body)
 
-        body = obj.data[start:end]
+        start = request.path_params.get('start', 0)
+        end = request.path_params.get('end', size)
+
+        body = body[start:end]
 
         if self.scope.get("xu60.meta"):
             names, previous_version, next_version = changeset(obj, repo, request)
@@ -172,8 +175,8 @@ class Object(HTTPEndpoint):
             return JSONResponse({
                 "id": str(obj.id),
                 "names": names,
-                "body": body.decode('utf-8'),
-                "length": obj.size,
+                "body": body,
+                "length": size,
                 "window": {"start": start, "end": end},
                 "previous_version": previous_version,
                 "next_version": next_version
