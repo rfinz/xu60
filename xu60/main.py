@@ -126,7 +126,7 @@ class Directory(HTTPEndpoint):
         Send version directory, one entry per blob object in the tree.
         """
         repo = request.app.state.repo
-        res = "object,time,name,length,type\n"
+        res = "object,time,name,length,indices\n"
 
         vd = cvd(repo, request)
         json = []
@@ -137,7 +137,7 @@ class Directory(HTTPEndpoint):
                     t["id"] = str(t["id"])
                     json += [t]
                 else:
-                    res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]},{t["type"]}\n'
+                    res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]},{t["indices"]}\n'
         if self.scope.get("xu60.meta"):
             return JSONResponse(json)
         return Response(res, media_type='text/plain')
@@ -180,6 +180,7 @@ class Object(HTTPEndpoint):
                 "id": str(obj.id),
                 "names": names,
                 "length": size,
+                "indices": "bytes" if obj.is_binary else "chars",
                 "window": {"start": start, "end": end},
                 "previous_version": previous_version,
                 "next_version": next_version
@@ -188,8 +189,10 @@ class Object(HTTPEndpoint):
                 resp["body"] = body
 
             return JSONResponse(resp)
-
-        return Response(body, media_type='text/plain')
+        headers = {
+            "Cache-Control": "max-age=3600, stale-while-revalidate=86400, immutable"
+        }
+        return Response(body, headers=headers, media_type='text/plain')
 
 
 class Versions(HTTPEndpoint):
