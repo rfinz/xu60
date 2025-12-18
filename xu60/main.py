@@ -161,8 +161,12 @@ class Object(HTTPEndpoint):
         if not obj or obj.type != ObjectType.BLOB:
             raise HTTPException(status_code=404, detail="Not Found")
 
-        body = obj.data.decode('utf-8')
-        size = len(body)
+        if obj.is_binary:
+            body = obj.data
+            size = obj.size
+        else:
+            body = obj.data.decode('utf-8')
+            size = len(body)
 
         start = request.path_params.get('start', 0)
         end = request.path_params.get('end', size)

@@ -31,7 +31,7 @@ def cvd(repo, request):
                          "name": p,
                          "length": e.size if e.is_binary else len(e.data.decode('utf-8')),
                          "message": commit.message,
-                         "type": "bytes" if e.is_binary else "chars"
+                         "indices": "bytes" if e.is_binary else "chars"
                          }
                     ]
                     if e.id in prev:
