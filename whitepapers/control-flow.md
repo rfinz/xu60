@@ -14,8 +14,8 @@ r"""\A
 )?
 (?(resource)                             # if asking for a resource
   (?P<slice>                             # check for slice component
-  (?:/(?P<begin>\d+)/)?                  # check for start index
-  (?(begin)-|/-)                         # match different "-/" for start/no start
+  (?:/(?P<start>\d+)/)?                  # check for start index
+  (?(start)-|/-)                         # match different "-/" for start/no start
   (?:/(?P<end>\d+))?                     # check for end index
 )?|\b)                                   # if no resource, only match empty
 \Z"""

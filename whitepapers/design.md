@@ -9,6 +9,7 @@
 - IPFS / IPLD, DNSlink
 - The Dark Forest internet
 - the federated social internet
+- HTTP range requests
 
 ## The Questions
 
