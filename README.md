@@ -184,20 +184,20 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 #### `/meta` 
 → json containing site-level metadata.
 
-> ```
+> ```json
 > GET /meta
->
->{
->  "site": "http://127.0.0.1:8000/meta/",
->  "origin": "git@github.com:rfinz/xu60.git",
->  "head": "98f6ae10b7c6ad5c7f1e90a76626b4bb0fb0185e",
->  "last_updated": "2025-12-21 22:53:27",
->  "content_id": "sha1",
->  "mirrors": {},
->  "meta": "/meta",
->  "object": "/object",
->  "versions": "/versions"
->}
+> 
+> {
+>   "site": "http://127.0.0.1:8000/meta/",
+>   "origin": "git@github.com:rfinz/xu60.git",
+>   "head": "98f6ae10b7c6ad5c7f1e90a76626b4bb0fb0185e",
+>   "last_updated": "2025-12-21 22:53:27",
+>   "content_id": "sha1",
+>   "mirrors": {},
+>   "meta": "/meta",
+>   "object": "/object",
+>   "versions": "/versions"
+> }
 > ```
 
 ### wraps
@@ -217,7 +217,7 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 >       "message": "probably needs more testing but introducing time slicing!\n"
 >     }
 >   ],
-> >  "length": 10603,
+>   "length": 10603,
 >   "indices": "chars",
 >   "window": {
 >     "start": 4,
