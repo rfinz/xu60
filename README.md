@@ -121,11 +121,11 @@ the `versions` endpoint is the main way to query **xu60** about the presence of 
 > ```
 > GET /versions
 >
-> object,time,name,length
-> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602
-> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802
-> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720
-> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635
+> object,time,name,length,indices
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602,chars
+> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802,chars
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720,chars
+> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635,chars
 > .
 > .
 > . (etc)
@@ -138,13 +138,16 @@ the `versions` endpoint is the main way to query **xu60** about the presence of 
 > ```
 > GET /versions/xu60/main.py
 > 
-> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5
-> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50
-> 9c0229c95a31e68b2ee462144958d5cd8b086bbc
-> 4f447767d9769b488b5c8f09cf9aac8e3a63199c
-> 618c18287da9a58ab788f576489bc5e1fb5fb17b
-> 41448625864ff4b3e0893342d941972213a6392b
-> aeddd83401a4d616fed2d44b63c2ffb15c1e1d6b
+> a9083f8cce97c1c83473000460f9de3bde35ac82
+> 9c6b6c847e6682ec319ad64a0274c6f7ee366472
+> c7563b7d2149cb8371647881a2f960b2f6dd544f
+> 7d217e22d67e5e30b65ab8554a6866e5be3f004f
+> cb80696bc75b9ebc69e7047eca5c6ea4cb15fc53
+> 4b424a220ac9410307d0b82635d53bb1759acf2d
+> d75af2786adcf34a71d875eba132c6f92048b0b6
+> .
+> .
+> . (etc)
 > ```
 
 ### time slicing
@@ -163,14 +166,13 @@ parallel to the way that the `object` interface allows slicing content by charac
 let's say we want to grab the versions of `xu60/main.py` mentioned in the truncated output of `/versions` above, plus anything newer, just in case there's a new version since this README was written.
 
 > ```
-> GET /versions/xu60/main.py/1764042716/-   # notice no end time
+> GET /versions/xu60/main.py/1766035196/-   # notice no end time
 > 
-> ee1b33e686015ba51b168111d12744abfa7ce1fd
-> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5
-> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50
+> a9083f8cce97c1c83473000460f9de3bde35ac82
+> 9c6b6c847e6682ec319ad64a0274c6f7ee366472
+> c7563b7d2149cb8371647881a2f960b2f6dd544f
+> 7d217e22d67e5e30b65ab8554a6866e5be3f004f
 > ```
-
-oh yeaaaa actually I did make a bugfix while writing this (ee1b33e686015ba51b168111d12744abfa7ce1fd)
 
 ---
 
@@ -185,30 +187,119 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 > ```
 > GET /meta
 >
-> {
->   "site": "http://127.0.0.1:8000/meta",
->   "origin": "git@github.com:rfinz/xu60.git",
->   "head": "49d4b0e9e2fce503f37c925b5b263b02ca03299e",
->   "last_updated": "2025-11-25 21:06:42",
->   "meta": "/meta",
->   "object": "/object",
->   "versions": "/versions"
-> }
+>{
+>  "site": "http://127.0.0.1:8000/meta/",
+>  "origin": "git@github.com:rfinz/xu60.git",
+>  "head": "98f6ae10b7c6ad5c7f1e90a76626b4bb0fb0185e",
+>  "last_updated": "2025-12-21 22:53:27",
+>  "content_id": "sha1",
+>  "mirrors": {},
+>  "meta": "/meta",
+>  "object": "/object",
+>  "versions": "/versions"
+>}
 > ```
 
 ### wraps
 #### `/meta/{object endpoint}`
 → more metadata about objects
 
-> ```
+> ```json
 > GET /meta/object/23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5/4/-/6
+> 
+> {
+>   "id": "23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5",
+>   "names": [
+>     {
+>       "name": "xu60/main.py",
+>       "commit_id": "300133b9b17d5bfbed20bb1b589afab61908423f",
+>       "time": 1764053925,
+>       "message": "probably needs more testing but introducing time slicing!\n"
+>     }
+>   ],
+> >  "length": 10603,
+>   "indices": "chars",
+>   "window": {
+>     "start": 4,
+>     "end": 6
+>   },
+>   "previous_version": {
+>     "id": "2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50",
+>     "changes": [
+>       {
+>         "from": "8216/-/8217",
+>         "to": "8216/-/8243"
+>       },
+>       {
+>         "from": "8281/-/8281",
+>         "to": "8281/-/8764"
+>       },
+>       {
+>         "from": "8268/-/8572",
+>         "to": "8777/-/8812"
+>       },
+>       {
+>         "from": "8907/-/8907",
+>         "to": "8907/-/9549"
+>       }
+>     ]
+>   },
+>   "next_version": {
+>     "id": "ee1b33e686015ba51b168111d12744abfa7ce1fd",
+>     "changes": [
+>       {
+>         "from": "2142/-/2189",
+>         "to": "2142/-/2185"
+>       },
+>       {
+>         "from": "6630/-/6689",
+>         "to": "6626/-/6681"
+>       },
+>       {
+>         "from": "7723/-/7763",
+>         "to": "7715/-/7751"
+>       }
+>     ]
+>   },
+>   "body": "Ho"
+> }
 > ```
 
 #### `/meta/{versions endpoint}`
 → more metadata about names and versions
 
-> ```
-> GET /meta/versions/xu60/main.py/1764042716/-
+> ```json
+> GET /meta/versions/xu60/main.py/1766035196/-
+> 
+> {
+>   "name": "xu60/main.py",
+>   "versions": [
+>     {
+>       "id": "a9083f8cce97c1c83473000460f9de3bde35ac82",
+>       "commit_id": "48508790c473cfc8cdbd25a2f42d6a2d9e9ea6f5",
+>       "time": 1766294358,
+>       "message": "being a janitor used to mean something\n"
+>     },
+>     {
+>       "id": "9c6b6c847e6682ec319ad64a0274c6f7ee366472",
+>       "commit_id": "3b3d4458bcad078134bc730ca1c622d7a33e90ed",
+>       "time": 1766088642,
+>       "message": "fix bug, use cache for object requests\n"
+>     },
+>     {
+>       "id": "c7563b7d2149cb8371647881a2f960b2f6dd544f",
+>       "commit_id": "f36337f94bc43eb69a986a9f77a82d82dae4a737",
+>       "time": 1766083424,
+>       "message": "implemented the nobody query finally\n"
+>     },
+>     {
+>       "id": "7d217e22d67e5e30b65ab8554a6866e5be3f004f",
+>       "commit_id": "7abef08ae162f53d2f2b042d41e0f8e56b078240",
+>       "time": 1766035196,
+>       "message": "use bytes if binary data\n"
+>     }
+>   ]
+> }
 > ```
 
 ---
