@@ -64,11 +64,11 @@ this is the primary affordance of **xu60**: the object API delivers document dat
 > ```
 > GET /object
 >
-> object,time,name,length
-> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602
-> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802
-> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720
-> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635
+> object,time,name,length,indices
+> 23413cdfecdeb434cd5ae7ce8ea72e71fec1b0b5,1764053925,xu60/main.py,10602,chars
+> 7d31564ba2a01c8d75d01ed050a1185280da454c,1764044450,whitepapers/design.md,11802,chars
+> 2acac76e44d2ace1cf3f8b395f4fbeeec26c6d50,1764042716,xu60/main.py,9720,chars
+> e01a8f3de37189c322812df39dccebae82dac5c9,1763962600,README.md,2635,chars
 > .
 > .
 > . (etc)
