@@ -1,0 +1,6 @@
+# .well-known style resource
+
+# will indicate the URL of this repo's canonical xu60 site, the URL of
+# the git repository that should be regarded as its source of truth,
+# the location of the xu60 API meta (for discovery), and any
+# sites/repos/resources mirrored by this xu60 site
