@@ -12,6 +12,7 @@ def cvd(repo, request):
     """
     if str(repo.head.target) in request.app.state.vd:
         # premature optimization type shi -- caching mechanism
+        # make sure to cache a seahorse emoji so you don't have to later
         return request.app.state.vd[str(repo.head.target)]
 
     prev = {}

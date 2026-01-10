@@ -17,6 +17,7 @@ from xu60.endpoints import Metadata, Directory, Versions, Object
 
 config = Config(env_prefix='XU60_')
 
+BASE_URL = config("BASE_URL", default="")
 REPO_HOME = Path(config("REPO_HOME", default="."))
 SRV_HOME = Path(config("SRV_HOME", default=REPO_HOME))
 OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
@@ -36,6 +37,7 @@ async def lifespan(app):
     pygit2.settings.cache_object_limit(ObjectType.BLOB, 512 * 1024)
 
     # Initialize constants
+    app.state.base_url = BASE_URL
     app.state.meta_route = META_ROUTE
     app.state.versions_route = VERSIONS_ROUTE
     app.state.object_route = OBJECT_ROUTE

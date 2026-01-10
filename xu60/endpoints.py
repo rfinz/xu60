@@ -28,7 +28,6 @@ class Metadata(HTTPEndpoint):
         otherwise return JSON metadata for the entire repo.
         """
         state = request.app.state
-        host = request.headers['host']
         repo = state.repo
         head = repo.revparse_single('HEAD')
         meta = request.path_params.get('meta_url')
@@ -36,6 +35,14 @@ class Metadata(HTTPEndpoint):
             origin = repo.remotes["origin"].url
         except KeyError:
             origin = "None"
+
+        try:
+            if repo.config.get_int("core.repositoryFormatVersion") > 0:
+                content_id = repo.config["extensions.objectFormat"]
+            else:
+                content_id = "sha1"
+        except KeyError:
+            content_id = "sha1"
 
         if meta:
             scope = dict(self.scope)
@@ -48,11 +55,11 @@ class Metadata(HTTPEndpoint):
             return self.noop
 
         return JSONResponse({
-            "site": f'{request.url.scheme}://{host}{request.url.path}',
+            "site": f'{request.url.scheme}://{request.url.netloc}{state.base_url}',
             "origin": origin,
             "head": str(head.id),
             "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time)),
-            "content_id": "sha1", #placeholder -- should be calculated from the object database
+            "content_id": content_id,
             "mirrors": state.mirrors,
             "meta": f"/{state.meta_route}",
             "object": f"/{state.object_route}",
