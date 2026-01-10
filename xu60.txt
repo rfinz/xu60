@@ -4,3 +4,8 @@
 # the git repository that should be regarded as its source of truth,
 # the location of the xu60 API meta (for discovery), and any
 # sites/repos/resources mirrored by this xu60 site
+
+Site: https://xu60.xyz
+xu60-Meta: https://xu60.xyz/meta
+Truth: https://github.com/rfinz/xu60
+Mirrors: 
