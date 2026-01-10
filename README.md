@@ -188,8 +188,8 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 > GET /meta
 > 
 > {
->   "site": "http://127.0.0.1:8000/meta/",
->   "origin": "git@github.com:rfinz/xu60.git",
+>   "site": "http://127.0.0.1:8000",
+>   "truth": "https://github.com/rfinz/xu60.git",
 >   "head": "98f6ae10b7c6ad5c7f1e90a76626b4bb0fb0185e",
 >   "last_updated": "2025-12-21 22:53:27",
 >   "content_id": "sha1",

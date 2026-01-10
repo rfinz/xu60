@@ -32,9 +32,9 @@ class Metadata(HTTPEndpoint):
         head = repo.revparse_single('HEAD')
         meta = request.path_params.get('meta_url')
         try:
-            origin = repo.remotes["origin"].url
+            truth = repo.remotes["origin"].url
         except KeyError:
-            origin = "None"
+            truth = "None"
 
         try:
             if repo.config.get_int("core.repositoryFormatVersion") > 0:
@@ -56,7 +56,7 @@ class Metadata(HTTPEndpoint):
 
         return JSONResponse({
             "site": f'{request.url.scheme}://{request.url.netloc}{state.base_url}',
-            "origin": origin,
+            "truth": truth,
             "head": str(head.id),
             "last_updated": str(datetime.datetime.fromtimestamp(head.commit_time)),
             "content_id": content_id,
