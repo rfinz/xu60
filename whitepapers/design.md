@@ -117,3 +117,17 @@ Where Ted's design had [tumbler addresses](https://web.archive.org/web/200212301
 ### why?
 
 It seems like the web has mostly lost the thread. Modern websites are applications delivered via HTTP, not shining examples of hypertext. Trendy knowledge management tools tout two-way linking but seem to ignore where the value comes from when tracing a thought to its original source. Distributed protocols are amazing but the opacity of the systems that employ them leave an enormous chasm between them and lay-users that is easily filled with grift and magical thinking. AI is simultaneously amazing and underwhelming--the most expensive and least accurate library ever published--but at least it's charming. It seems like we're learning all the wrong lessons over and over and over again. So maybe a better question is why not? Why wouldn't we want to be able to access character spans from any content-addressable source on the web?
+
+We also find ourselves at a critical moment when the town square has disintegrated. There are some interesting conversations in private venues and worthwhile newsletters delivered to our inboxes, but much of what made web1/web2/web3 charming and connective is gone. Social media is a hell-scape and much of what remains is just group chats and vague gesturing.
+
+### un/intended consequences
+
+1. Sites hosted with **xu60** are censorship resistant. The website and its repository are one and the same--backing up the contents is as simple as cloning the repo and mirroring it elsewhere. **xu60** directory pages contain the content ids of every object in the tree--it's trivially easily to confirm that the site has been faithfully reproduced.
+
+2. **xu60** sites are discoverable. The presence of a `xu60.txt` well-known file in the repository is easily detectable via the built-in search functions of any widely used code forge. This discoverability doesn't mean that the site isn't slop, and *eventually* simplistic search may not suffice, but basic discoverability on large platforms is enough for now. The presence of `xu60.txt` in the same location on the live site is a positive indicator that conventions and protocols are being respected.
+
+3. **xu60** is exclusive. Large database-driven applications *could* have associated **xu60** sites, but the purpose is largely different at that point (remember how I said **xu60** wouldn't force a vision of a particular product or process and then almost immediately started describing my preferred product and processes? I had forgotten).
+
+4. **xu60** doesn't need adoption to be useful. Even if there are only ever a few *live* instances, **xu60** can index and transclude any content from git repositories anywhere on the web that are accessable via HTTP.
+
+5. **xu60** doesn't rely on notifications. Want to see if someone is transcluding your site? Do a string search for your repository name on the major code forges, or check the transclusion stats on your live site. In the age of codebots this is eminently scriptable.
