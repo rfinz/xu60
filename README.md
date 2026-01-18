@@ -302,6 +302,20 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 > }
 > ```
 
+## suggested types of **xu60** deployments
+- "(quinish)[https://en.wikipedia.org/wiki/Quine_(computing)]"
+  a site's git repository and the site itself are one in the same -- **xu60** delivers the contents on the WWW. The website for this project is itself a quinish [under construction].
+  
+- version tracking
+  a site maintains its display layer separate from its content (and outside of **xu60's** purview). The role of **xu60** is to maintain a history of the content, independent of its display details. Alternatively, **ux60** could be used to track changes to a site's display layer, even as the content is so dynamic that "version control" no longer makes sense.
+  
+- diff+link
+  use the **xu60** client to visualize changes of the content across time, and transclude and annotate content from external sites. The website for this project [under construction] is itself a quinish sort of diff+link
+  
+- indieweb
+  built on top any other type (version tracking, quinish, diff+link) of **xu60** deployment, linking to an object slice on a friend's deployment is adequate indication of a "mention". No need for a "blog roll", scraping your transclusions and links into a central table accomplishes most of that for you.
+
+
 ---
 
 > [!IMPORTANT]
