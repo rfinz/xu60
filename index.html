@@ -17,6 +17,24 @@
     </template>
     <template id="xu60-parallel">
     </template>
+    <script>
+     let templates = document.getElementsByTagName('template');
+     for(let t = 0; t<templates.length; t++){
+         let componentName = templates[t].id;
+         customElements.define(
+             componentName,
+             class extends HTMLElement {
+                 constructor() {
+                     super();
+                     let template = document.getElementById(componentName);
+                     let templateContent = template.content;
+                     const shadowRoot = this.attachShadow({ mode: "open" });
+                     shadowRoot.appendChild(document.importNode(templateContent, true));
+                 }
+             },
+         );
+     };
+    </script>
     
     <div hx-target="find <pre.output/>"
          hx-swap="innerHTML"
