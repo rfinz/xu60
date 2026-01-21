@@ -309,7 +309,7 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
   
 - **version tracking**
 
-  a site maintains its display layer separate from its content (and outside of **xu60's** purview). The role of **xu60** is to maintain a history of the content, independent of its display details. Alternatively, **ux60** could be used to track changes to a site's display layer, even as the content is so dynamic that "version control" no longer makes sense.
+  a site maintains its display layer separate from its content (and outside of **xu60's** purview). The role of **xu60** is to maintain a history of the content, independent of its display details. Alternatively, **xu60** could be used to track changes to a site's display layer, even as the content is so dynamic that "version control" no longer makes sense.
   
 - **diff+link**
 
