@@ -7,16 +7,31 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
   </head>
   <body>
+    <!-- Whole Document Templates -->
     <template id="xu60-version">
-    </template>
-    <template id="xu60-change">
-    </template>
-    <template id="xu60-note">
-    </template>
-    <template id="xu60-quote">
+      <slot></slot>
     </template>
     <template id="xu60-parallel">
+      <slot></slot>
     </template>
+
+    <!-- Document Fragment Templates -->
+    <template id="xu60-change">
+      <slot name="pre-content"></slot>
+      <slot></slot>
+      <slot name="post-content"></slot>
+    </template>
+    <template id="xu60-note">
+      <slot name="pre-content"></slot>
+      <slot></slot>
+      <slot name="post-content"></slot>
+    </template>
+    <template id="xu60-quote">
+      <slot name="pre-content"></slot>
+      <slot></slot>
+      <slot name="post-content"></slot>
+    </template>
+
     <script>
      let templates = document.getElementsByTagName('template');
      for(let t = 0; t<templates.length; t++){
