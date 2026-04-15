@@ -24,17 +24,20 @@ r"""\A
 ## Mirroring
 
 **:tentative:**
-Mirroring support is tentatively planned for git repositories (current) and IPFS (future work) content. The intent is to build both git and IPFS clients into the *xu60* backend, such that when a mirror is included in **xu60**'s .well-known, *xu60* with automagically clone the contents of the mirror to the locally served folder.
+
+Mirroring support is tentatively planned for git repositories (current) and IPFS (future work) content. The intent is to build both git and IPFS clients into the **xu60** backend, such that when a mirror is included in **xu60**'s *.well-known*, **xu60** will automagically clone the contents of the mirror to the locally served folder.
 
 ### Git
 Git Mirrors are specified by a repository location that is to be used as a source of Truth and a commit from which to load (mostly to ensure integrity if the deployment ever has to be rebuilt). This looks something like this:
 
 `https://github.com/rfinz/xu60.git@98f6ae10b7c6ad5c7f1e90a76626b4bb0fb0185e`
 
-**xu60** will clone the git repo at the specified commit and fail if the commit does not exist. If an `xu60.txt` resource is found in the root of the repository, **xu60** will "mount" the version names under the domain name listed under the "Site" directive. If no `xu60.txt` is present, the repository is presumed to be under regular version control, and the git repository's name is used instead.
+**xu60** will clone the git repo at the specified commit and fail if the commit does not exist. If an `xu60.txt` resource is found in the root of the repository, **xu60** will "mount" the content *version names* under the domain name listed under the "Site" directive. If no `xu60.txt` is present, the repository is presumed to be under regular version control, and the git repository's name is used instead.
 
 ### IPFS
 
 IPFS mirrors are specified directly with their content ID. This looks like this:
 
-`bafybeigrf2dwtpjkiovnigysyto3d55opf6qkdikx6d65onrqnfzwgdkfa`
+`https://ipfs.io/ipfs/bafybeigrf2dwtpjkiovnigysyto3d55opf6qkdikx6d65onrqnfzwgdkfa?filename=mirrorname.ext`
+
+**xu60** will verify the CAR, and mount the file or DAG at the specified mirrorname, leaving off any file extensions. 
