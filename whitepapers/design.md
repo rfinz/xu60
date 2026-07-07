@@ -128,6 +128,6 @@ We also find ourselves at a critical moment when the town square has disintegrat
 
 3. **xu60** is exclusive. Large database-driven applications *could* have associated **xu60** sites, but the purpose is largely different at that point (remember how I said **xu60** wouldn't force a vision of a particular product or process and then almost immediately started describing my preferred product and processes? I had forgotten).
 
-4. **xu60** doesn't need adoption to be useful. Even if there are only ever a few *live* instances, **xu60** can index and transclude any content from git repositories anywhere on the web that are accessable via HTTP.
+4. **xu60** doesn't need adoption to be useful. Even if there are only ever a few *live* instances, **xu60** can index and transclude any content from repositories anywhere on the web that are accessible via HTTP and other transports.
 
 5. **xu60** doesn't rely on notifications. Want to see if someone is transcluding your site? Do a string search for your repository name on the major code forges, or check the transclusion stats on your live site. In the age of codebots this is eminently scriptable.
