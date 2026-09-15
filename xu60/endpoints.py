@@ -7,7 +7,7 @@ from pathlib import Path
 
 from starlette.exceptions import HTTPException
 from starlette.endpoints import HTTPEndpoint
-from starlette.responses import Response, JSONResponse
+from starlette.responses import Response, JSONResponse, HTMLResponse
 from pygit2.enums import ObjectType
 
 from xu60.data import cvd, cnd, changeset
@@ -88,9 +88,13 @@ class Directory(HTTPEndpoint):
                     json += [t]
                 else:
                     res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]},{t["indices"]}\n'
+                    
         if self.scope.get("xu60.meta"):
             return JSONResponse(json)
-        return Response(res, media_type='text/plain')
+        elif "html" in request.query_params:
+            return HTMLResponse(res)
+        else:
+            return Response(res, media_type='text/plain')
 
 
 class Object(HTTPEndpoint):
