@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="tackeons.css">
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js" integrity="sha384-BvJpBiO8Kh31EqtJe5DRIeWrHWnCGkwytKs9NKFi86Hhw96dEqdEMzZDeK9iEGTc" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.93/dist/_hyperscript.min.js" integrity="sha384-/6HsqTiz02YfFBUhzTwlH/yxe68DhfnkdHiWytM3nxAzs/yvG+3FZY0f4KLnNoov" crossorigin="anonymous"></script>
   </head>
-  <body>
+  <body class="debug-grid f-antique">
     <!-- Whole Document Templates -->
     <template id="xu60-version">
       <slot></slot>
@@ -50,27 +51,43 @@
          );
      };
     </script>
-    
-    <div hx-target="find pre.output"
-         hx-swap="innerHTML"
-         class="ctainer"
-         data-xu60-name="README.md"
-    >
-      <pre _="init
-              set :x to 0
-              set :container to the closest parent <div.ctainer/>
-              set name to :container's @data-xu60-name
-              fetch `/versions/$name` then set :versions to result.trim().split('\n') then
-              fetch `/object/${:versions[0]}` then put the result into me
-              end
-              on mutation of childList increment :x then
-              set :container's @hx-get to `/object/${:versions[:x]}` then
-              put :container into container
-              js(container) htmx.process(container) end
-              if :x >= (:versions.length - 1) then set :x to -1"
-           class="output">
+    <div id="outer" class="slate-gray-1">
+      <div id="headline" class="flex justify-around">
+        <div class="w-10"></div>
+        <div class="flex-column w-80">
+          <h1 class="f12-l f10-m f6-s f-heading b lh-solid my1 pt6-l pt4 bg-white tc outline"> xu60 </h1>
+          <h2 class="f7-m f5-s tracked-mega-l tracked-m lh-solid my2 pt3 bg-white tc outline v-baseline"> needed now more than ever </h2>
+          <p class="outline bg-white p3 my2">xu60 is a simple API for serving content-addressable text. this API, combined with a little javascript and some creative HTML, becomes a tactile medium for exploring ideas, visualizing code, crafting text applications, and more</p>
+        </div>
+        <div class="w-10"></div>
+      </div>
 
-      </pre>
+      <div id="readme-app" class="flex justify-around">
+        <div id="readme-app-previous" class="w-25-l w-0"></div>
+        
+        <div hx-target="find pre.output"
+             hx-swap="innerHTML"
+             class="ctainer outline bg-white truncate w-50-l w-100 px3"
+             data-xu60-name="README.md"
+        >
+          <pre _="init
+                  set :x to 0
+                  set :container to the closest parent <div.ctainer/>
+                  set name to :container's @data-xu60-name
+                  fetch `/versions/$name` then set :versions to result.trim().split('\n') then
+                  fetch `/object/${:versions[0]}` then put the result into me
+                  end
+                  on mutation of childList increment :x then
+                  set :container's @hx-get to `/object/${:versions[:x]}` then
+                  put :container into container
+                  js(container) htmx.process(container) end
+                  if :x >= (:versions.length - 1) then set :x to -1"
+               class="output">
+
+          </pre>
+        </div>
+        <div id="readme-app-next" class="w-25-l w-0"></div>
+      </div>
     </div>
   </body>
 </html>
