@@ -88,13 +88,13 @@ class Directory(HTTPEndpoint):
                     json += [t]
                 else:
                     res += f'{t["id"]},{t["time"]},{t["name"]},{t["length"]},{t["indices"]}\n'
-                    
+
         if self.scope.get("xu60.meta"):
             return JSONResponse(json)
-        elif "html" in request.query_params:
+        if "html" in request.query_params:
             return HTMLResponse(res)
-        else:
-            return Response(res, media_type='text/plain')
+
+        return Response(res, media_type='text/plain')
 
 
 class Object(HTTPEndpoint):
