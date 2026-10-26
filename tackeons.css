@@ -3790,6 +3790,27 @@ img { display: block; max-width: 100%; }
   .w-two-thirds-l { width: calc(100% / 1.5); }
   .w-auto-l {    width: auto; }
 }
+
+@container (min-width:80em) {
+  .w0-xl {    width: var(--size-0, 0); }
+  .w1-xl {    width: var(--size-1, 1rem); }
+  .w2-xl {    width: var(--size-2, 2rem); }
+  .w3-xl {    width: var(--size-3, 3rem); }
+  .w4-xl {    width: var(--size-4, 4rem); }
+  .w5-xl {    width: var(--size-5, 8rem); }
+  .w6-xl {    width: var(--size-6, 16rem); }
+  .w7-xl {    width: var(--size-7, 32rem); }
+  .w8-xl {    width: var(--size-8, 64rem); }
+  .w-10-xl {    width:  10%; }
+  .w-20-xl {    width:  20%; }
+  .w-25-xl {    width:  25%; }
+  .w-50-xl {    width:  50%; }
+  .w-75-xl {    width:  75%; }
+  .w-100-xl {   width: 100%; }
+  .w-third-xl { width: calc(100% / 3); }
+  .w-two-thirds-xl { width: calc(100% / 1.5); }
+  .w-auto-xl {    width: auto; }
+}
 /*
 
     OVERFLOW
