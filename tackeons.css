@@ -2629,6 +2629,14 @@ img { display: block; max-width: 100%; }
 
 */
 
+@container (max-width:48em) {
+  .blur2-s { filter: blur(16px); }  
+}
+
+@container (max-width:80em) and (min-width:48em){
+  .blur1-m { filter: blur(4px); }  
+}
+
 .filter-none { filter: none; }
 
 .blur1 { filter: blur(4px); }
@@ -3804,6 +3812,7 @@ img { display: block; max-width: 100%; }
   .w-10-xl {    width:  10%; }
   .w-20-xl {    width:  20%; }
   .w-25-xl {    width:  25%; }
+  .w-40-xl {    width:  40%; }
   .w-50-xl {    width:  50%; }
   .w-75-xl {    width:  75%; }
   .w-100-xl {   width: 100%; }

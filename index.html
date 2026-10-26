@@ -63,31 +63,35 @@
         <div class="w-10"></div>
       </div>
 
-      <div id="readme-app" class="flex justify-around">
-        <div id="readme-app-previous" class="w-25-xl w-0"></div>
-        
-        <div hx-target="find pre.output"
-             hx-swap="innerHTML"
-             class="ctainer outline bg-white truncate w-50-xl w-100 px3"
-             data-xu60-name="README.md"
-        >
-          <pre _="init
-                  set :x to 0
-                  set :container to the closest parent <div.ctainer/>
-                  set name to :container's @data-xu60-name
-                  fetch `/versions/$name` then set :versions to result.trim().split('\n') then
-                  fetch `/object/${:versions[0]}` then put the result into me
-                  end
-                  on mutation of childList increment :x then
-                  set :container's @hx-get to `/object/${:versions[:x]}` then
-                  put :container into container
-                  js(container) htmx.process(container) end
-                  if :x >= (:versions.length - 1) then set :x to -1"
-               class="output">
-
-          </pre>
+      <div id="readme-app"
+           class="flex justify-center">
+        <div id="readme-app-previous"
+             hx-action="/README.md"
+             hx-method="GET"
+             hx-trigger="revealed"
+             hx-target="find pre.output"
+             hx-swap="textContent transition:true"
+             class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m">
+          <pre class="output">test</pre>
+        </div>        
+        <div id="readme-app-active"
+             hx-action="/README.md"
+             hx-method="GET"
+             hx-trigger="revealed"
+             hx-target="find pre.output"
+             hx-swap="textContent transition:true"
+             class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden">
+          <pre class="output"></pre>
         </div>
-        <div id="readme-app-next" class="w-25-xl w-0"></div>
+        <div id="readme-app-next"
+             hx-action="/README.md"
+             hx-method="GET"
+             hx-trigger="revealed"
+             hx-target="find pre.output"
+             hx-swap="textContent transition:true"
+             class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m">
+          <pre class="output"></pre>
+        </div>
       </div>
     </div>
   </body>
