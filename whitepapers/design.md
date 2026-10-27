@@ -130,4 +130,6 @@ We also find ourselves at a critical moment when the town square has disintegrat
 
 4. **xu60** doesn't need adoption to be useful. Even if there are only ever a few *live* instances, **xu60** can index and transclude any content from repositories anywhere on the web that are accessible via HTTP and other transports.
 
-5. **xu60** doesn't rely on notifications. Want to see if someone is transcluding your site? Do a string search for your repository name on the major code forges, or check the transclusion stats on your live site. In the age of codebots this is eminently scriptable.
+5. **xu60** is implementable in server-rendered apps, expanding the possible distribution of **xu60** EDL documents to other hypertext protocols like [gemini](https://geminiprotocol.net/), though we lose some of the swooshing a swarfing that makes an HTML/Javascript/CSS implementation tactile and usable.
+
+6. **xu60** doesn't rely on notifications. Want to see if someone is transcluding your site? Do a string search for your repository name on the major code forges, or check the transclusion stats on your live site. In the age of codebots this is eminently scriptable.
