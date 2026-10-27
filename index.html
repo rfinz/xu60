@@ -36,39 +36,86 @@
          );
      };
     </script>
+
+    <script type="text/hyperscript">
+     behavior ScrollLock
+     set @data-locked-scroll to 'true'
+     on scroll
+     tell <[data-locked-scroll]/> where it is not me 
+     set your scrollTop to my scrollTop
+     set your scrollLeft to my scrollLeft
+     end
+     end
+     end
+    </script>    
+    
     <div id="outer" class="slate-gray-1">
-      <div id="headline" class="flex justify-around">
+      <header id="headline" class="flex justify-around">
         <div class="w-10"></div>
         <div class="flex-column w-80">
           <h1 class="f12-l f10-m f6-s f-heading b lh-solid my1 pt6-l pt4 bg-white tc outline"> xu60 </h1>
           <h2 class="f7-m f5-s tracked-mega-l tracked-m lh-solid my2 pt3 bg-white tc outline v-baseline"> needed now more than ever </h2>
-          <p class="outline bg-white p3 my2">xu60 is a simple API for serving content-addressable text. this API, combined with a little javascript and some creative HTML, becomes a tactile medium for exploring ideas, visualizing code, crafting text applications, and more</p>
+          <p class="outline bg-white p3 my2"><b class="dim">xu60</b> is a simple API for serving content-addressable text. this API, combined with a little javascript and some creative HTML, becomes a tactile medium for exploring ideas, visualizing code, crafting text applications, and bringing the sparkle of the great intertwingularity to the Web</p>
         </div>
         <div class="w-10"></div>
-      </div>
-      <p class="slate-gray-2 tc bg-white">🡓🡓🡓 this is the source code for the "README" for <b>xu60</b> 🡓🡓🡓</p>
+      </header>
+      <p class="slate-gray-2 tc bg-white">&darr;&darr;&darr; <b class="dim">xu60</b> demo application under construction &darr;&darr;&darr;</p>
       <div id="readme-app"
            class="flex justify-center">
         <xu60-version id="readme-app-previous"
+                      _="install ScrollLock"
                       hx-action="/README.md"
                       hx-method="GET"
                       hx-swap="textContent transition:true"
                       hx-trigger="revealed"
-                      class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>     
+                      class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>     
         <xu60-version id="readme-app-active"
+                      _="install ScrollLock"
                       hx-action="/README.md"
                       hx-method="GET"
                       hx-swap="textContent transition:true"
                       hx-trigger="revealed"
                       class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden pre f-mono-code">Loading...</xu60-version>
         <xu60-version id="readme-app-next"
+                      _="install ScrollLock"
                       hx-action="/README.md"
                       hx-method="GET"
                       hx-swap="textContent transition:true"
                       hx-trigger="revealed"
-                      class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>
+                      class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>
       </div>
-      <p class="slate-gray-2 tc bg-white">🡑🡑🡑 we can easily scroll back through time without dealing with gnarly page loads 🡑🡑🡑</p>
+      <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>
     </div>
+    
+    <main class="flex justify-around m0 p0">
+      <div class="w-10"></div>
+      <div class="flex-column w-80">
+        <p class="outline bg-white p3 my2 measure-wide pre-wrap">From a technical perspective, <b class="dim">xu60</b> is not a new contribution.
+          
+<b class="dim">it</b>
+<span class="lh-body">  1) indexes a content addressable archive (git for now)
+and
+  2) provides a few endpoints for querying and slicing objects in the archive.
+</span>
+          It is as much a spec as it is an implementation.
+
+but an <i>implementation</i> is necessary in order to <i>understand</i> <b class="dim">xu60</b>.
+<span class="small-caps lh-body">  May the Curse of Xandadu be lifted.</span>
+
+The whole of the project is as a series of "what if?" questions:
+    "what if we treat referentiality as a first class citizen?"
+    "what if we could see aboutness instead of looking through it?"
+    <span class="magenta-3 dim lh-body">"what if we picked up a different fork from the hypertext road, dusted it off, and made soup?"</span>
+        </p>
+      </div>
+      <div class="w-10"></div>
+    </main>
+    
+    <footer class="outline bg-white p4 m2">
+      <p class="tc py1 m0">© 2026 <b class="dim">xu60</b></p>
+      <div class="flex justify-center items-baseline slate-gray-4 f-mono-code">
+        <div class="w1 tc">&#9829;</div><p class="tc w-auto">code generated by models trained on this site <a href="https://github.com/rfinz/xu60.git" class="link underline-hover">(or repo)</a> must be licensed GPL3 </p><div class="w1 tc">&#9829;</div>
+      </div>
+    </footer>
   </body>
 </html>
