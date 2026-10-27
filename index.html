@@ -10,29 +10,13 @@
   </head>
   <body class="debug-grid f-antique">
     <!-- Whole Document Templates -->
-    <template id="xu60-version">
-      <slot></slot>
-    </template>
-    <template id="xu60-parallel">
-      <slot></slot>
-    </template>
+    <template id="xu60-version"><slot></slot></template>
+    <template id="xu60-parallel"><slot></slot></template>
 
     <!-- Document Fragment Templates -->
-    <template id="xu60-change">
-      <slot name="pre-content"></slot>
-      <slot></slot>
-      <slot name="post-content"></slot>
-    </template>
-    <template id="xu60-note">
-      <slot name="pre-content"></slot>
-      <slot></slot>
-      <slot name="post-content"></slot>
-    </template>
-    <template id="xu60-quote">
-      <slot name="pre-content"></slot>
-      <slot></slot>
-      <slot name="post-content"></slot>
-    </template>
+    <template id="xu60-change"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
+    <template id="xu60-note"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
+    <template id="xu60-quote"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
 
     <script>
      let templates = document.getElementsByTagName('template');
