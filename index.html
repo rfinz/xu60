@@ -65,33 +65,24 @@
       <p class="slate-gray-2 tc bg-white">🡓🡓🡓 this is the source code for the "README" for <b>xu60</b> 🡓🡓🡓</p>
       <div id="readme-app"
            class="flex justify-center">
-        <div id="readme-app-previous"
-             hx-action="/README.md"
-             hx-method="GET"
-             hx-trigger="revealed"
-             hx-target="find output"
-             hx-swap="textContent transition:true"
-             class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m">
-          <output class="pre f-mono-code"></output>
-        </div>        
-        <div id="readme-app-active"
-             hx-action="/README.md"
-             hx-method="GET"
-             hx-trigger="revealed"
-             hx-target="find output"
-             hx-swap="textContent transition:true"
-             class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden">
-          <output class="pre f-mono-code"></output>
-        </div>
-        <div id="readme-app-next"
-             hx-action="/README.md"
-             hx-method="GET"
-             hx-trigger="revealed"
-             hx-target="find output"
-             hx-swap="textContent transition:true"
-             class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m">
-          <output class="pre f-mono-code"></output>
-        </div>
+        <xu60-version id="readme-app-previous"
+                      hx-action="/README.md"
+                      hx-method="GET"
+                      hx-swap="textContent transition:true"
+                      hx-trigger="revealed"
+                      class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>     
+        <xu60-version id="readme-app-active"
+                      hx-action="/README.md"
+                      hx-method="GET"
+                      hx-swap="textContent transition:true"
+                      hx-trigger="revealed"
+                      class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden pre f-mono-code">Loading...</xu60-version>
+        <xu60-version id="readme-app-next"
+                      hx-action="/README.md"
+                      hx-method="GET"
+                      hx-swap="textContent transition:true"
+                      hx-trigger="revealed"
+                      class="outline bg-white truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>
       </div>
       <p class="slate-gray-2 tc bg-white">🡑🡑🡑 we can easily scroll back through time without dealing with gnarly page loads 🡑🡑🡑</p>
     </div>
