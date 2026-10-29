@@ -106,6 +106,7 @@ class Object(HTTPEndpoint):
         Send object contents, with allowable URL pattern for selecting bytes.
         """
         repo = request.app.state.repo
+        json_caching = request.app.state.json_caching
         oid = request.path_params['object']
         try:
             obj = repo.get(oid)
@@ -142,7 +143,11 @@ class Object(HTTPEndpoint):
             if not obj.is_binary and body:
                 resp["body"] = body
 
-            return JSONResponse(resp)
+            json_headers = {
+                "Cache-Control": "max-age={}, stale-while-revalidate={}".format(json_caching, json_caching * 24)
+            }
+            return JSONResponse(resp, headers=json_headers)
+
         headers = {
             "Cache-Control": "max-age=3600, stale-while-revalidate=86400, immutable"
         }

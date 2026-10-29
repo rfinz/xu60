@@ -24,6 +24,7 @@ OBJECT_ROUTE = config("OBJECT_ROUTE", default="object")
 VERSIONS_ROUTE = config("VERSIONS_ROUTE", default="versions")
 META_ROUTE = config("META_ROUTE", default="meta")
 MIRRORS = config("MIRRORS", default={})
+JSON_CACHING = config("JSON_CACHING", cast=int, default=180)
 
 
 @asynccontextmanager
@@ -41,6 +42,7 @@ async def lifespan(app):
     app.state.meta_route = META_ROUTE
     app.state.versions_route = VERSIONS_ROUTE
     app.state.object_route = OBJECT_ROUTE
+    app.state.json_caching = JSON_CACHING
 
     # Initialize state
     app.state.repo = SuperRepo(REPO_HOME) # main repo
