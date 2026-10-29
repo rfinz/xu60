@@ -7,36 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js" integrity="sha384-BvJpBiO8Kh31EqtJe5DRIeWrHWnCGkwytKs9NKFi86Hhw96dEqdEMzZDeK9iEGTc" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/ext/hx-preload.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.94/dist/_hyperscript.min.js" integrity="sha384-Vhc5IAlz1zenO+d5PjrPP8UuDzlMX30xrv2aMzX0DWZ15ZUvqX7RBqvRTEsavX4R" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.94/dist/ext/component.min.js"></script>
+    <script type="text/hyperscript-component" src="/components/xu_hyperscript-components.html"></script>
   </head>
   <body class="debug-grid f-antique">
-    <!-- Whole Document Templates -->
-    <template id="xu60-version"><slot></slot></template>
-    <template id="xu60-parallel"><slot></slot></template>
-
-    <!-- Document Fragment Templates -->
-    <template id="xu60-change"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
-    <template id="xu60-note"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
-    <template id="xu60-quote"><slot name="pre-content"></slot><slot></slot><slot name="post-content"></slot></template>
-
-    <script>
-     let templates = document.getElementsByTagName('template');
-     for(let t = 0; t<templates.length; t++){
-         let componentName = templates[t].id;
-         customElements.define(
-             componentName,
-             class extends HTMLElement {
-                 constructor() {
-                     super();
-                     let template = document.getElementById(componentName);
-                     let templateContent = template.content;
-                     const shadowRoot = this.attachShadow({ mode: "open" });
-                     shadowRoot.appendChild(document.importNode(templateContent, true));
-                 }
-             },
-         );
-     };
-    </script>
-
     <script type="text/hyperscript">
      behavior ScrollLock
      set @data-locked-scroll to 'true'
@@ -63,25 +37,13 @@
       <div id="readme-app"
            class="flex justify-center">
         <xu60-version id="readme-app-previous"
-                      _="install ScrollLock"
-                      hx-action="/README.md"
-                      hx-method="GET"
-                      hx-swap="textContent transition:true"
-                      hx-trigger="revealed"
+                      xu-doc="/README.md"
                       class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>     
         <xu60-version id="readme-app-active"
-                      _="install ScrollLock"
-                      hx-action="/README.md"
-                      hx-method="GET"
-                      hx-swap="textContent transition:true"
-                      hx-trigger="revealed"
+                      xu-doc="/README.md"
                       class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden pre f-mono-code">Loading...</xu60-version>
         <xu60-version id="readme-app-next"
-                      _="install ScrollLock"
-                      hx-action="/README.md"
-                      hx-method="GET"
-                      hx-swap="textContent transition:true"
-                      hx-trigger="revealed"
+                      xu-doc="/README.md"
                       class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m pre f-mono-code">Loading...</xu60-version>
       </div>
       <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>

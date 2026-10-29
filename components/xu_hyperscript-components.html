@@ -1,0 +1,16 @@
+<!-- Whole Document Components -->
+<script type="text/hyperscript-template"
+        component="xu60-version"
+        _="init
+              fetch `/versions${@xu-doc}`
+              then set ^versions to result.trim().split('\n')
+              end">
+  <div class="content" hx-get="/object/${^versions[0]}" hx-trigger="processed" hx-swap="textContent transition:true" _="on mutation of @hx-get js(me) htmx.trigger(me, 'processed') end"><slot/></div>
+</script>
+
+<script type="text/hyperscript-template" component="xu60-parallel"></script>
+<!-- Document Fragment Components -->
+<script type="text/hyperscript-template" component="xu60-change"></script>
+<script type="text/hyperscript-template" component="xu60-note"></script>
+<script type="text/hyperscript-template" component="xu60-quote"></script>
+<script type="text/hyperscript-template" component="xu60-slice"></script>
