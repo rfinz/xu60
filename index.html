@@ -42,11 +42,16 @@
                make a <xu60-version.pre/> called :pv then
                set :pv's @xu-object to current.previous_version.id then
                put :pv into #ra-previous
+               otherwise
+               make a <div.pre/> then put it into #ra-previous
                end
+               
                if current.next_version.id then
                make a <xu60-version.pre/> called :nv then
                set :nv's @xu-object to current.next_version.id then
                put :nv into #ra-next
+               otherwise
+               make a <div.pre/> then put it into #ra-next
                end
                end
                

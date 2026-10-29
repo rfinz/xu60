@@ -18,7 +18,7 @@
               set @xu-current to ^metadata.id
               set @xu-next to ^metadata.next_version.id
               end">
-  <div class="content" hx-get="/object/${@xu-current}" hx-trigger="hsDone" hx-swap="textContent transition:true" _="on mutation of @hx-get trigger hsDone(current:^metadata) then settle"><slot/></div>
+  <div class="content" hx-get="/object/${@xu-current}" hx-trigger="hsDone" hx-swap="textContent" _="on mutation of @hx-get trigger hsDone(current:^metadata)"><slot/></div>
 </script>
 
 <script type="text/hyperscript-template" component="xu60-parallel"></script>
