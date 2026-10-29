@@ -35,15 +35,45 @@
       </header>
       <p class="slate-gray-2 tc bg-white">&darr;&darr;&darr; <b class="dim">xu60</b> demo application under construction &darr;&darr;&darr;</p>
       <div id="readme-app"
+           _="on hsDone(current)
+               set :sender to event.detail.sender
+               if the first .content in #ra-active is :sender then
+               if current.previous_version.id then
+               make a <xu60-version.pre/> called :pv then
+               set :pv's @xu-object to current.previous_version.id then
+               put :pv into #ra-previous
+               end
+               if current.next_version.id then
+               make a <xu60-version.pre/> called :nv then
+               set :nv's @xu-object to current.next_version.id then
+               put :nv into #ra-next
+               end
+               end
+               
+               on click
+               set :sender to the parentElement of event.target
+               set :previous to the first <xu60-version/> in #ra-previous
+               set :next to the first <xu60-version/> in #ra-next
+               if :previous is :sender then
+               make a <xu60-version.pre/> called :av then
+               set :av's @xu-object to :previous's @xu-current then
+               put :av into #ra-active
+               end
+
+               if :next is :sender then
+               make a <xu60-version.pre/> called :av then
+               set :av's @xu-object to :next's @xu-current then
+               put :av into #ra-active
+               end
+               end
+               "
            class="flex justify-center">
-        <div _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
-          <xu60-version id="readme-app-previous" xu-doc="/README.md" class="pre">Loading...</xu60-version>
+        <div id="ra-previous" _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
         </div>
-        <div _="install ScrollLock" class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden f-mono-code">
-          <xu60-version id="readme-app-active" xu-doc="/README.md" class="pre">Loading...</xu60-version>
+        <div id="ra-active" _="install ScrollLock" class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden f-mono-code">
+          <xu60-version xu-doc="/README.md" class="pre">Loading...</xu60-version>
         </div>
-        <div _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
-          <xu60-version id="readme-app-next" xu-doc="/README.md" class="pre">Loading...</xu60-version>
+        <div id="ra-next" _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
         </div>
       </div>
       <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>
