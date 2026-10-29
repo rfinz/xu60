@@ -2,10 +2,19 @@
 <script type="text/hyperscript-template"
         component="xu60-version"
         _="init
-              fetch `/versions${@xu-doc}`
+              set :xuv to @xu-version
+              default :xuv to 0
+              set :xuo to @xu-object
+              default :xuo to @xu-doc
+              fetch `/versions${:xuo}`
               then set ^versions to result.trim().split('\n')
+              then fetch `/meta/object/${^versions[:xuv]}?nobody` as JSON
+              set ^metadata to the result
+              set @xu-previous to ^metadata.previous_version.id
+              set @xu-current to ^metadata.id
+              set @xu-next to ^metadata.next_version.id
               end">
-  <div class="content" hx-get="/object/${^versions[0]}" hx-trigger="processed" hx-swap="textContent transition:true" _="on mutation of @hx-get js(me) htmx.trigger(me, 'processed') end"><slot/></div>
+  <div class="content" hx-get="/object/${@xu-current}" hx-trigger="processed" hx-swap="textContent transition:true" _="on mutation of @hx-get js(me) htmx.trigger(me, 'processed') end settle"><slot/></div>
 </script>
 
 <script type="text/hyperscript-template" component="xu60-parallel"></script>
