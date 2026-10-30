@@ -2,18 +2,8 @@
 <script type="text/hyperscript-template"
         component="xu60-version"
         _="init
-              set :xuv to @xu-version
-              default :xuv to 0
-              if @xu-doc then
-              fetch `/versions${@xu-doc}`
-              then set ^versions to result.trim().split('\n')
-              then fetch `/meta/object/${^versions[:xuv]}?nobody` as JSON
-              set ^metadata to the result
-              otherwise
               fetch `/meta/object/${@xu-object}?nobody` as JSON
               set ^metadata to the result
-              end
-              
               set @xu-previous to ^metadata.previous_version.id
               set @xu-current to ^metadata.id
               set @xu-next to ^metadata.next_version.id

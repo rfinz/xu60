@@ -20,7 +20,6 @@
      set your scrollLeft to my scrollLeft
      end
      end
-     end
     </script>    
     
     <div id="outer" class="slate-gray-1">
@@ -34,52 +33,109 @@
         <div class="w-10"></div>
       </header>
       <p class="slate-gray-2 tc bg-white">&darr;&darr;&darr; <b class="dim">xu60</b> demo application under construction &darr;&darr;&darr;</p>
-      <div id="readme-app"
-           _="on hsDone(current)
-               set :sender to event.detail.sender
-               if the first .content in #ra-active is :sender then
-               if current.previous_version.id then
-               make a <xu60-version.pre/> called :pv then
-               set :pv's @xu-object to current.previous_version.id then
-               put :pv into #ra-previous
-               otherwise
-               make a <div.pre/> then put it into #ra-previous
-               end
-               
-               if current.next_version.id then
-               make a <xu60-version.pre/> called :nv then
-               set :nv's @xu-object to current.next_version.id then
-               put :nv into #ra-next
-               otherwise
-               make a <div.pre/> then put it into #ra-next
-               end
-               end
-               
-               on click
-               set :sender to the parentElement of event.target
-               set :previous to the first <xu60-version/> in #ra-previous
-               set :next to the first <xu60-version/> in #ra-next
-               if :previous is :sender then
-               make a <xu60-version.pre/> called :av then
-               set :av's @xu-object to :previous's @xu-current then
-               put :av into #ra-active
-               end
 
-               if :next is :sender then
-               make a <xu60-version.pre/> called :av then
-               set :av's @xu-object to :next's @xu-current then
-               put :av into #ra-active
-               end
-               end
+      <script type="text/hyperscript-template" id="panel">
+       <div _="install ScrollLock" class="panel mx2 outline bg-white w-25 truncate o8 glow h7 f-mono-code">
+       <xu60-version class="pre" xu-object=${oid}>Loading...</xu-version>
+       </div>
+      </script>
+      
+      <script type="text/hyperscript-template" id="scroller">
+       #for v in versions
+       <div _="install ScrollLock" class="panel mx2 outline bg-white w-25 truncate o8 glow h7 f-mono-code">
+       <xu60-version class="pre" xu-object=${v}>Loading...</xu-version>
+       </div>
+       #end
+      </script>
+      <div id="readme-app"
+           xu-doc="/README.md"
+           _="init
+           fetch `/versions${@xu-doc}`
+           then set $versions to result.trim().split('\n')
+           pick items 0 to 2 of $versions
+           set :displayed to it as Reversed
+           render #scroller with versions: :displayed then morph me to it then settle
+           add .xu-active to last <div.panel/> in me
+           add .xu-previous to previous <div.panel/> from last <div.panel/>
+           end
+
+           on wheel throttled at 500ms
+           halt the event's default
+           if event.deltaX < -0.5
+           if some <div.xu-previous/>
+           set :panel to first <div.xu-previous/> in me
+           otherwise
+           set :panel to first <div.active/> in me
+           end
+           trigger rewind(panel: :panel)
+           end
+
+           if event.deltaX > 0.5
+           if some <div.xu-next/>
+           set :panel to last <div.xu-next/> in me
+           otherwise
+           set :panel to last <div.active/> in me
+           end
+           trigger forward(panel: :panel)
+           end
+           halt the event
+           
+           on rewind(panel)
+           set :xup to first <xu60-version/> in panel
+           set :poid to :xup's @xu-previous
+           set :noid to :xup's @xu-next
+           if :poid
+           start a view transition
+           render #panel with oid: :poid then put it before panel
+           if some <div.xu-next/> 
+           remove last <div.xu-next/> in me
+           end
+           take .xu-active from .xu-active for panel then trigger changeRole
+           end
+           otherwise
+           if :noid
+           take .xu-active from .xu-active for panel then trigger changeRole
+           end
+           settle
+           end
+           
+           
+           on forward(panel)
+           set :xup to first <xu60-version/> in panel
+           set :poid to :xup's @xu-previous
+           set :noid to :xup's @xu-next
+           if :noid
+           start a view transition
+           render #panel with oid: :noid then put it after panel
+           if some <div.xu-previous/> 
+           remove first <div.xu-previous/> in me
+           end
+           take .xu-active from .xu-active for panel then trigger changeRole
+           end
+           otherwise
+           if :poid
+           take .xu-active from .xu-active for panel then trigger changeRole
+           end
+           end
+           settle
+           end
+
+           on changeRole
+           set :active to first <div.xu-active/> in me
+           set :previous to first <div.panel/> in me
+           set :next to last <div.panel/> in me
+           if :previous != :active
+           add .xu-previous to :previous
+           remove .xu-previous from :active
+           end
+
+           if :next != :active
+           add .xu-next to :next
+           remove .xu-next from :active
+           end
+           settle
                "
-           class="flex justify-center">
-        <div id="ra-previous" _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
-        </div>
-        <div id="ra-active" _="install ScrollLock" class="outline bg-white w-40-xl w-70 px3 mx2 h7 overflow-y-scroll overflow-x-hidden f-mono-code">
-          <xu60-version xu-doc="/README.md" class="pre">Loading...</xu60-version>
-        </div>
-        <div id="ra-next" _="install ScrollLock" class="outline bg-white o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m f-mono-code">
-        </div>
+           class="flex flex-nowrap justify-center nowrap h7ish p4">
       </div>
       <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>
     </div>

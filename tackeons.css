@@ -592,6 +592,7 @@ summary {
   --size-5: 8rem;
   --size-6: 16rem;
   --size-7: 32rem;
+  --size-7ish: 36rem;
   --size-8: 64rem;
 
   --shadow-color: 0 0 0;
@@ -3391,6 +3392,7 @@ img { display: block; max-width: 100%; }
 .h5 {    height: var(--size-5, 8rem); }
 .h6 {    height: var(--size-6, 16rem); }
 .h7 {    height: var(--size-7, 32rem); }
+.h7ish { height: var(--size-7ish, 36rem); }
 .h8 {    height: var(--size-8, 64rem); }
 
 /* Height Percentages - Based off of height of parent */
@@ -7576,6 +7578,11 @@ img { display: block; max-width: 100%; }
 
   Animate opacity to 100% on hover by adding the glow class.
 
+     on intersection(intersecting) having threshold 0.5
+     if intersecting transition *opacity to :o
+     else transition *opacity to 0
+     
+
 */
 .glow {
   transition: opacity .15s ease-in;
@@ -7789,6 +7796,77 @@ img { display: block; max-width: 100%; }
 
 */
 
+@container (min-width:80em) {
+    #readme-app > div.xu-active {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 40%;
+        filter: none;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        opacity: 1;
+    }
+}
+
+@container (max-width:80em) {
+    #readme-app > div.xu-active {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 70%;
+        filter: none;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        opacity: 1;
+    }
+}
+
+@container (min-width:80em) {
+    div.xu-previous {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 25%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@container (max-width:80em) {
+    div.xu-previous {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 10%;
+        filter: blur(4px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@container (min-width:80em) {
+    div.xu-next {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 25%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@container (max-width:80em) {
+    div.xu-next {
+        /* transition: width .15s ease-out; */
+        /* transition: width .15s ease-in; */
+        width: 10%;
+        filter: blur(4px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m */
 
 /* Debugging */
 /*
