@@ -17,8 +17,11 @@
      on scroll
      tell <[data-locked-scroll]/> where it is not me 
      set your scrollTop to my scrollTop
-     set your scrollLeft to my scrollLeft
-     end
+     on click
+     take .xu-active with .xu-other then wait 300ms
+     then scroll to the center of me in #readme-app smoothly then settle
+     then wait 300ms
+     scroll to the center of me in #readme-app smoothly
      end
     </script>    
     
@@ -35,107 +38,69 @@
       <p class="slate-gray-2 tc bg-white">&darr;&darr;&darr; <b class="dim">xu60</b> demo application under construction &darr;&darr;&darr;</p>
 
       <script type="text/hyperscript-template" id="panel">
-       <div _="install ScrollLock" class="panel mx2 outline bg-white w-25 truncate o8 glow h7 f-mono-code">
+       <div _="install ScrollLock" xu-object=${oid} class="panel mx2 outline bg-white w-25 flex-none truncate o8 glow h7 f-mono-code xu-other">
        <xu60-version class="pre" xu-object=${oid}>Loading...</xu-version>
        </div>
       </script>
       
       <script type="text/hyperscript-template" id="scroller">
        #for v in versions
-       <div _="install ScrollLock" class="panel mx2 outline bg-white w-25 truncate o8 glow h7 f-mono-code">
-       <xu60-version class="pre" xu-object=${v}>Loading...</xu-version>
+        <div _="install ScrollLock" xu-object=${v} class="panel mx2 outline bg-white w-25 flex-none truncate o8 glow h7 f-mono-code xu-other">
+          <xu60-version class="pre" xu-object=${v}>Loading...</xu-version>
        </div>
        #end
       </script>
       <div id="readme-app"
            xu-doc="/README.md"
            _="init
-           fetch `/versions${@xu-doc}`
-           then set $versions to result.trim().split('\n')
-           pick items 0 to 2 of $versions
-           set :displayed to it as Reversed
-           render #scroller with versions: :displayed then morph me to it then settle
-           add .xu-active to last <div.panel/> in me
-           add .xu-previous to previous <div.panel/> from last <div.panel/>
-           end
+               fetch `/versions${@xu-doc}`
+               then set $versions to result.trim().split('\n')
+               pick items 0 to 5 of $versions
+               set $loaded to it as Reversed
+               render #scroller with versions: $loaded then morph me to it then settle
+               set $display to .panel in me
+               add .xu-active to last .panel in me
+               remove .xu-other from last .panel in me
+               scroll to first .xu-active in me
+               end
 
-           on wheel throttled at 500ms
-           halt the event's default
-           if event.deltaX < -0.5
-           if some <div.xu-previous/>
-           set :panel to first <div.xu-previous/> in me
-           otherwise
-           set :panel to first <div.active/> in me
-           end
-           trigger rewind(panel: :panel)
-           end
-
-           if event.deltaX > 0.5
-           if some <div.xu-next/>
-           set :panel to last <div.xu-next/> in me
-           otherwise
-           set :panel to last <div.active/> in me
-           end
-           trigger forward(panel: :panel)
-           end
-           halt the event
-           
-           on rewind(panel)
-           set :xup to first <xu60-version/> in panel
-           set :poid to :xup's @xu-previous
-           set :noid to :xup's @xu-next
-           if :poid
-           start a view transition
-           render #panel with oid: :poid then put it before panel
-           if some <div.xu-next/> 
-           remove last <div.xu-next/> in me
-           end
-           take .xu-active from .xu-active for panel then trigger changeRole
-           end
-           otherwise
-           if :noid
-           take .xu-active from .xu-active for panel then trigger changeRole
-           end
-           settle
-           end
-           
-           
-           on forward(panel)
-           set :xup to first <xu60-version/> in panel
-           set :poid to :xup's @xu-previous
-           set :noid to :xup's @xu-next
-           if :noid
-           start a view transition
-           render #panel with oid: :noid then put it after panel
-           if some <div.xu-previous/> 
-           remove first <div.xu-previous/> in me
-           end
-           take .xu-active from .xu-active for panel then trigger changeRole
-           end
-           otherwise
-           if :poid
-           take .xu-active from .xu-active for panel then trigger changeRole
-           end
-           end
-           settle
-           end
-
-           on changeRole
-           set :active to first <div.xu-active/> in me
-           set :previous to first <div.panel/> in me
-           set :next to last <div.panel/> in me
-           if :previous != :active
-           add .xu-previous to :previous
-           remove .xu-previous from :active
-           end
-
-           if :next != :active
-           add .xu-next to :next
-           remove .xu-next from :active
-           end
-           settle
+               on scroll queue none    
+               if my scrollLeft + my clientWidth > my scrollWidth - 50 then
+               set :c to first <xu60-version/> in $display[$display.length-1]
+               set :next to :c's @xu-next
+               if :next then
+               if $loaded does not contain :next then
+               render #panel with oid: :next then put it at the end of me then settle
+               then put :next at the end of $loaded
+               else
+               set :panel to <div.panel/> in me where it's @xu-object is :next
+               show :panel with hidden then settle
+               end
+               hide $display[0] with hidden
+               scroll me left by 1px instantly
+               end
+               set $display to <div.panel:not([hidden])/> in me
+               end
+               
+               if my scrollLeft is 0 then
+               set :c to first <xu60-version/> in $display[0]
+               set :previous to :c's @xu-previous
+               if :previous then
+               if $loaded does not contain :previous then
+               render #panel with oid: :previous then put it at the start of me then settle
+               then put :previous at the start of $loaded
+               else
+               set :panel to <div.panel/> in me where it's @xu-object is :previous
+               show :panel with hidden then settle
+               end
+               hide $display[$display.length-1] with hidden
+               scroll me right by 1px instantly
+               end
+               set $display to <div.panel:not([hidden])/> in me
+               end
                "
-           class="flex flex-nowrap justify-center nowrap h7ish p4">
+           class="flex flex-nowrap items-right nowrap h7ish p4 overflow-x-scroll trans-all"
+      >
       </div>
       <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>
     </div>
