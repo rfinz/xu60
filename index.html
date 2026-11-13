@@ -74,10 +74,11 @@
                then put :next at the end of $loaded
                else
                set :panel to <div.panel/> in me where it's @xu-object is :next
-               show :panel with hidden then settle
+               show :panel with hidden
                end
-               hide $display[0] with hidden
                scroll me left by 1px instantly
+               else
+               pick items start to ($display.length - 5) of $display then hide it with hidden
                end
                set $display to <div.panel:not([hidden])/> in me
                end
@@ -91,7 +92,7 @@
                then put :previous at the start of $loaded
                else
                set :panel to <div.panel/> in me where it's @xu-object is :previous
-               show :panel with hidden then settle
+               show :panel with hidden then wait 50ms
                end
                hide $display[$display.length-1] with hidden
                scroll me right by 1px instantly
