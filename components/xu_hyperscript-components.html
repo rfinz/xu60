@@ -2,15 +2,41 @@
 <script type="text/hyperscript-template"
         component="xu60-version"
         _="init
-              fetch `/meta/object/${@xu-object}?nobody` as JSON
-              set ^metadata to the result
-              set @xu-previous to ^metadata.previous_version.id
-              set @xu-current to ^metadata.id
-              set @xu-next to ^metadata.next_version.id
-              default @xu-previous to ''
-              default @xu-next to ''
-              end">
-  <div class="content" hx-get="/object/${@xu-current}" hx-trigger="hsDone" hx-swap="textContent" _="on mutation of @hx-get trigger hsDone(current:^metadata)"><slot/></div>
+        fetch `/meta/object/${@xu-object}` as JSON
+        set ^metadata to the result
+        set @xu-previous to ^metadata.previous_version.id
+        set @xu-current to ^metadata.id
+        set @xu-next to ^metadata.next_version.id
+        default @xu-previous to ''
+        default @xu-next to ''
+        set ^changeOrigin to ^metadata.next_version.changes mapped to its from.split('/-/')
+        set ^changeTarget to ^metadata.previous_version.changes mapped to its to.split('/-/')
+        
+        set :prev to 0
+        set :contents to ^metadata.body
+        set :textFragments to []
+        for cf in ^changeTarget
+        pick characters :prev to cf[0] from :contents then append it to :textFragments
+        pick characters cf[0] to cf[1] from :contents
+        if it.length>1 then
+        append `<span id='${@xu-current}-${cf[0]}-${cf[1]}' class='bg-green-10'>${it}</span>` to :textFragments
+        else
+        append `<span id='${@xu-current}-${cf[0]}-${cf[1]}'></span>${it}` to :textFragments
+        end
+        set :prev to cf[1]
+        end
+        pick characters :prev to (:contents.length - 1) from :contents then append it to :textFragments
+        set :intermediate to :textFragments joined by ''
+
+        -- awaiting code to interpolate other changes and do smart coloring
+        
+        set :final to :intermediate 
+        set innerHTML of first .content in me to :final
+        end
+              
+              ">
+  <div class="content"><slot/></div>
+                                                      
 </script>
 
 <script type="text/hyperscript-template" component="xu60-parallel"></script>
