@@ -7803,8 +7803,7 @@ img { display: block; max-width: 100%; }
 
 @container (min-width:80em) {
     #readme-app > div.xu-active {
-        transition: width .3s ease-out;
-        transition: width .3s ease-in;
+        transition: all .3s ease-in-out;
         width: 60%;
         filter: none;
         overflow-x: hidden;
@@ -7819,8 +7818,7 @@ img { display: block; max-width: 100%; }
 
 @container (max-width:80em) {
     #readme-app > div.xu-active {
-        transition: width .3s ease-out;
-        transition: width .3s ease-in;
+        transition: all .3s ease-in-out;
         width: 90%;
         filter: none;
         overflow-x: hidden;
@@ -7834,55 +7832,8 @@ img { display: block; max-width: 100%; }
 }
 
 @container (min-width:80em) {
-    div.xu-previous {
-        /* transition: width .15s ease-out; */
-        /* transition: width .15s ease-in; */
-        width: 25%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-@container (max-width:80em) {
-    div.xu-previous {
-        /* transition: width .15s ease-out; */
-        /* transition: width .15s ease-in; */
-        width: 10%;
-        filter: blur(4px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-@container (min-width:80em) {
-    div.xu-next {
-        /* transition: width .15s ease-out; */
-        /* transition: width .15s ease-in; */
-        width: 25%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-@container (max-width:80em) {
-    div.xu-next {
-        /* transition: width .15s ease-out; */
-        /* transition: width .15s ease-in; */
-        width: 10%;
-        filter: blur(4px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-@container (min-width:80em) {
     div.xu-other {
-        transition: width .3s ease-out;
-        transition: width .3s ease-in;
+        transition: width .3s ease-in-out;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -7891,13 +7842,23 @@ img { display: block; max-width: 100%; }
 
 @container (max-width:80em) {
     div.xu-other {
-        transition: width .3s ease-out;
-        transition: width .3s ease-in;
+        transition: width .3s ease-in-out;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 }
+
+.xu-target::after {
+    content: '|';
+    background-color: rgba(0,0,255, 0.5);
+}
+
+.xu-origin::after {
+    content: '|';
+    background-color: rgba(255,100,0, 0.5);
+}
+
 
 /* o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m */
 

@@ -9,23 +9,37 @@
         set @xu-next to ^metadata.next_version.id
         default @xu-previous to ''
         default @xu-next to ''
-        set ^changeOrigin to ^metadata.next_version.changes mapped to its from.split('/-/')
-        set ^changeTarget to ^metadata.previous_version.changes mapped to its to.split('/-/')
+        set ^changeOrigin to ^metadata.next_version.changes mapped to it.from
+        set ^changeTarget to ^metadata.previous_version.changes mapped to it.to
+
+        set marks to []
+        set :textFragments to []
+        
+        for cf in ^changeTarget
+        set c to cf.split('/-/')
+        set :change to c[1] - c[0]
+        make a <span.xu-target/> then
+        put :change into its @data-xu-highlight
+        append [c[0] as Number, it] to marks
+        end
+
+        for cf in ^changeOrigin
+        set c to cf.split('/-/')
+        set :change to c[1] - c[0]
+        make a <span.xu-origin/> then
+        put :change into its @data-xu-highlight
+        append [c[0] as Number, it] to marks
+        end
         
         set :prev to 0
         set :contents to ^metadata.body
-        set :textFragments to []
-        for cf in ^changeTarget
-        pick characters :prev to cf[0] from :contents then append it to :textFragments
-        pick characters cf[0] to cf[1] from :contents
-        if it.length>1 then
-        append `<span id='${@xu-current}-${cf[0]}-${cf[1]}' class='bg-green-10'>${it}</span>` to :textFragments
-        else
-        append `<span id='${@xu-current}-${cf[0]}-${cf[1]}'></span>${it}` to :textFragments
-        end
-        set :prev to cf[1]
+        for m in marks.sort(\ a, b -> a[0] - b[0])
+        pick characters :prev to m[0] from :contents then append it to :textFragments
+        append m[1].outerHTML to :textFragments
+        set :prev to m[0]
         end
         pick characters :prev to (:contents.length - 1) from :contents then append it to :textFragments
+        -- log @xu-current, :textFragments
         set :intermediate to :textFragments joined by ''
 
         -- awaiting code to interpolate other changes and do smart coloring
@@ -33,8 +47,7 @@
         set :final to :intermediate 
         set innerHTML of first .content in me to :final
         end
-              
-              ">
+        ">
   <div class="content"><slot/></div>
                                                       
 </script>
