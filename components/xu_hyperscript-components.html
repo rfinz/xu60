@@ -18,16 +18,20 @@
         for cf in ^changeTarget
         set c to cf.split('/-/')
         set :change to c[1] - c[0]
-        make a <span.xu-target/> then
-        put :change into its @data-xu-highlight
+        make a <xu60-change.xu-target/> then
+        put :change into its @xu-highlight
+        if :change == 0 then put '&times;' into its @data-mark end
+        set its id to @xu-current + '_ACCEPTS_' + c[0] + '-' + c[1]
         append [c[0] as Number, it] to marks
         end
 
         for cf in ^changeOrigin
         set c to cf.split('/-/')
         set :change to c[1] - c[0]
-        make a <span.xu-origin/> then
-        put :change into its @data-xu-highlight
+        make a <xu60-change.xu-origin/> then
+        put :change into its @xu-highlight
+        if :change == 0 then put '&harr;' into its @data-mark end
+        set its id to @xu-current + '_SENDS_' + c[0] + '-' + c[1]
         append [c[0] as Number, it] to marks
         end
         
@@ -39,13 +43,9 @@
         set :prev to m[0]
         end
         pick characters :prev to (:contents.length - 1) from :contents then append it to :textFragments
-        -- log @xu-current, :textFragments
-        set :intermediate to :textFragments joined by ''
-
-        -- awaiting code to interpolate other changes and do smart coloring
-        
-        set :final to :intermediate 
-        set innerHTML of first .content in me to :final
+        set :final to :textFragments joined by ''
+        set innerHTML of first .content in me to :final then settle
+        then trigger xu60:version:done
         end
         ">
   <div class="content"><slot/></div>

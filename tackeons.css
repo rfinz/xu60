@@ -7850,13 +7850,28 @@ img { display: block; max-width: 100%; }
 }
 
 .xu-target::after {
-    content: '|';
-    background-color: rgba(0,0,255, 0.5);
+    content: attr(data-mark);
+    color:blue;
+    background-color: rgba(10,255,155, .75);
+    text-decoration: green wavy underline;
 }
 
 .xu-origin::after {
-    content: '|';
-    background-color: rgba(255,100,0, 0.5);
+    content: attr(data-mark);
+    background-color: rgba(255,100,75, .75);
+    text-decoration: red solid overline;
+}
+
+
+::highlight(xu-target) {
+    color:blue;
+    background-color: rgba(10,255,155, .75);
+    text-decoration: green wavy underline;
+}
+
+::highlight(xu-origin) {
+    background-color: rgba(255,100,75, .75);
+    text-decoration: red solid overline;
 }
 
 

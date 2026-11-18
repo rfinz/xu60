@@ -9,6 +9,58 @@
     <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.94/dist/_hyperscript.min.js" integrity="sha384-Vhc5IAlz1zenO+d5PjrPP8UuDzlMX30xrv2aMzX0DWZ15ZUvqX7RBqvRTEsavX4R" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.94/dist/ext/component.min.js"></script>
     <script type="text/hyperscript-component" src="/components/xu_hyperscript-components.html"></script>
+    <script type="text/hyperscript">
+     def highlight(me)
+     if not CSS.highlights then exit end
+     set ranges to []
+     for xC in .xu-origin in me
+     js(me, xC)
+     let r = new Range();
+     let n = 0;
+     r.setStartAfter(xC);
+     if(xC.nextSibling){
+         n = xC.getAttribute('xu-highlight');
+         if(xC.nextSibling.nodeValue && n > xC.nextSibling.nodeValue.length){
+             n = xC.nextSibling.nodeValue.length;
+         }
+         if(!xC.nextSibling.nodeValue){
+             n = 0;
+         }
+         r.setEnd(xC.nextSibling, n)
+     } else { r.setEndAfter(xC) }
+     return r
+     end
+     append it to ranges
+     end
+     if ranges.length > 0 then
+     js(ranges) CSS.highlights.set('xu-origin', new Highlight(...ranges)); end
+     end
+
+     set ranges to []
+     for xC in .xu-target in me
+     js(me, xC)
+     let r = new Range();
+     let n = 0;
+     r.setStartAfter(xC);
+     if(xC.nextSibling){
+         n = xC.getAttribute('xu-highlight');
+         if(xC.nextSibling.nodeValue && n > xC.nextSibling.nodeValue.length){
+             n = xC.nextSibling.nodeValue.length;
+         }
+         if(!xC.nextSibling.nodeValue){
+             n = 0;
+         }
+         r.setEnd(xC.nextSibling, n)
+     } else { r.setEndAfter(xC) }
+     return r
+     end
+     append it to ranges
+     end
+     if ranges.length > 0 then
+     js(ranges) CSS.highlights.set('xu-target', new Highlight(...ranges)); end
+     end
+     end
+    </script>
   </head>
   <body class="debug-grid f-antique">
     <script type="text/hyperscript">
@@ -64,6 +116,10 @@
                add .xu-active to last .panel in me
                remove .xu-other from last .panel in me
                scroll to first .xu-active in me
+               end
+
+               on xu60:version:done queue last
+               highlight(me)
                end
 
                on scroll queue none    
