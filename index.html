@@ -66,7 +66,7 @@
     <script type="text/hyperscript">
      behavior ScrollLock
      set @data-locked-scroll to 'true'
-     on scroll throttled at 10ms
+     on scroll throttled at 10ms queue first
      tell <[data-locked-scroll]/> where it is not me 
      set your scrollTop to my scrollTop
      on click
