@@ -14,25 +14,33 @@
 
         set marks to []
         set :textFragments to []
-        
+
+        set :count to 0
         for cf in ^changeTarget
         set c to cf.split('/-/')
         set :change to c[1] - c[0]
         make a <xu60-change.xu-target/> then
         put :change into its @xu-highlight
+        put :count into its @xu-count
+        put 'xu-target' into its @xu-type
         if :change == 0 then put '&times;' into its @data-mark end
         set its id to @xu-current + '_ACCEPTS_' + c[0] + '-' + c[1]
         append [c[0] as Number, it] to marks
+        increment :count
         end
 
+        set :count to 0
         for cf in ^changeOrigin
         set c to cf.split('/-/')
         set :change to c[1] - c[0]
         make a <xu60-change.xu-origin/> then
         put :change into its @xu-highlight
+        put :count into its @xu-count
+        put 'xu-origin' into its @xu-type
         if :change == 0 then put '&harr;' into its @data-mark end
         set its id to @xu-current + '_SENDS_' + c[0] + '-' + c[1]
         append [c[0] as Number, it] to marks
+        increment :count
         end
         
         set :prev to 0

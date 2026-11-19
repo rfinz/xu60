@@ -12,53 +12,45 @@
     <script type="text/hyperscript">
      def highlight(me)
      if not CSS.highlights then exit end
-     set ranges to []
-     for xC in .xu-origin in me
+     make a Map then set ranges to it
+     for xC in <xu60-change/> in me
+     set :type to @xu-type of xC
+     set :count to @xu-count of xC mod 5
+     set @data-highlight-mod of xC to :count
+     call ranges.getOrInsert(:type + :count, []) then set rA to it
      js(me, xC)
      let r = new Range();
-     let n = 0;
+     let n = Number(xC.getAttribute('xu-highlight'));
+     let offset = 0;
      r.setStartAfter(xC);
-     if(xC.nextSibling){
-         n = xC.getAttribute('xu-highlight');
-         if(xC.nextSibling.nodeValue && n > xC.nextSibling.nodeValue.length){
-             n = xC.nextSibling.nodeValue.length;
+     let nibling = xC.nextSibling;
+     while(nibling && offset <= n){
+         if (nibling.nodeType == 3) {
+             if (offset + nibling.nodeValue.length > n) break;
+             offset += nibling.nodeValue.length
+         } else if (nibling.childNodes){
+             offset += nibling.textContent.length
          }
-         if(!xC.nextSibling.nodeValue){
-             n = 0;
-         }
-         r.setEnd(xC.nextSibling, n)
-     } else { r.setEndAfter(xC) }
+         nibling = nibling.nextSibling;
+     }
+     if(nibling && nibling.nodeType == 3){
+         r.setEnd(nibling,  Math.max(n - offset, 0));         
+     } else if(nibling){
+         r.setEndAfter(nibling)
+     } else {
+         r.setEndAfter(xC)
+     }
      return r
      end
-     append it to ranges
+     append it to rA
      end
-     if ranges.length > 0 then
-     js(ranges) CSS.highlights.set('xu-origin', new Highlight(...ranges)); end
+     
+     for rA in ranges
+     set k to rA[0]
+     set r to rA[1]
+     js(k, r, xC) CSS.highlights.set(k, new Highlight(...r)); end
      end
-
-     set ranges to []
-     for xC in .xu-target in me
-     js(me, xC)
-     let r = new Range();
-     let n = 0;
-     r.setStartAfter(xC);
-     if(xC.nextSibling){
-         n = xC.getAttribute('xu-highlight');
-         if(xC.nextSibling.nodeValue && n > xC.nextSibling.nodeValue.length){
-             n = xC.nextSibling.nodeValue.length;
-         }
-         if(!xC.nextSibling.nodeValue){
-             n = 0;
-         }
-         r.setEnd(xC.nextSibling, n)
-     } else { r.setEndAfter(xC) }
-     return r
-     end
-     append it to ranges
-     end
-     if ranges.length > 0 then
-     js(ranges) CSS.highlights.set('xu-target', new Highlight(...ranges)); end
-     end
+     
      end
     </script>
   </head>

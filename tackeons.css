@@ -7849,31 +7849,107 @@ img { display: block; max-width: 100%; }
     }
 }
 
-.xu-target::after {
+xu60-change[xu-type="xu-target"][data-highlight-mod="0"]::after {
     content: attr(data-mark);
-    color:blue;
-    background-color: rgba(10,255,155, .75);
-    text-decoration: green wavy underline;
+    background-color: rgba(10,255,155, 1);
 }
 
-.xu-origin::after {
+xu60-change[xu-type="xu-target"][data-highlight-mod="1"]::after {
     content: attr(data-mark);
-    background-color: rgba(255,100,75, .75);
-    text-decoration: red solid overline;
+    background-color: rgba(255,100,75, 1);
+}
+
+xu60-change[xu-type="xu-target"][data-highlight-mod="2"]::after {
+    content: attr(data-mark);
+    background-color: rgba(255,100,155, 1);
+}
+
+xu60-change[xu-type="xu-target"][data-highlight-mod="3"]::after {
+    content: attr(data-mark);
+    background-color: rgba(75,10,255, 1);
+}
+
+xu60-change[xu-type="xu-target"][data-highlight-mod="4"]::after {
+    content: attr(data-mark);
+    background-color: rgba(255,255,100, 1);
+}
+
+xu60-change[xu-type="xu-origin"][data-highlight-mod="0"]::after {
+    content: attr(data-mark);
+    background-color: rgba(10,255,155, .01);
+    text-decoration: rgba(10,255,155, 1) dashed underline overline 3px;
+}
+
+xu60-change[xu-type="xu-origin"][data-highlight-mod="1"]::after {
+    content: attr(data-mark);
+    background-color: rgba(255,100,75, .01);
+    text-decoration: rgba(255,100,75, 1) dashed underline overline 3px;
+}
+
+xu60-change[xu-type="xu-origin"][data-highlight-mod="2"]::after {
+    content: attr(data-mark);
+    background-color: rgba(255,100,155, .01);
+    text-decoration: rgba(255,100,155, 1) dashed underline overline 3px;
+}
+
+xu60-change[xu-type="xu-origin"][data-highlight-mod="3"]::after {
+    content: attr(data-mark);
+    background-color: rgba(75,10,255, .01);
+    text-decoration: rgba(75,10,255, 1) dashed underline overline 3px;
+}
+
+xu60-change[xu-type="xu-origin"][data-highlight-mod="4"]::after {
+    content: attr(data-mark);
+    background-color: rgba(255,255,100, .01);
+    text-decoration: rgba(255,255,100, 1) dashed underline overline 3px;
 }
 
 
-::highlight(xu-target) {
-    color:blue;
-    background-color: rgba(10,255,155, .75);
-    text-decoration: green wavy underline;
+::highlight(xu-target0) {
+    background-color: rgba(10,255,155, .3);
 }
 
-::highlight(xu-origin) {
-    background-color: rgba(255,100,75, .75);
-    text-decoration: red solid overline;
+::highlight(xu-origin0) {
+    background-color: rgba(10,255,155, .01);
+    text-decoration: rgba(10,255,155, 1) dashed underline overline 3px;
 }
 
+::highlight(xu-target1) {
+    background-color: rgba(255,100,75, .3);;
+}
+
+::highlight(xu-origin1) {
+    background-color: rgba(255,100,75, .01);
+    text-decoration: rgba(255,100,75, 1) dashed underline overline 3px;
+
+}
+
+::highlight(xu-target2) {
+    background-color: rgba(255,100,155, .3);
+}
+
+::highlight(xu-origin2) {
+    background-color: rgba(255,100,155, .01);
+    text-decoration: rgba(255,100,155, 1) dashed underline overline 3px;
+}
+
+::highlight(xu-target3) {
+    background-color: rgba(75,10,255, .3);
+}
+
+::highlight(xu-origin3) {
+    background-color: rgba(75,10,255, .01);
+    text-decoration: rgba(75,10,255, 1) dashed underline overline 3px;
+}
+
+::highlight(xu-target4) {
+    background-color: rgba(255,255,100, .3);
+}
+
+::highlight(xu-origin4) {
+    background-color: rgba(255,255,100, .01);
+    text-decoration: rgba(255,255,100, 1) dashed underline overline 3px;
+}
 
 /* o8 glow truncate w-25-xl w-10 h7 blur2-s blur1-m */
 
