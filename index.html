@@ -14,27 +14,35 @@
      if not CSS.highlights then exit end
      make a Map then set ranges to it
      for xC in <xu60-change/> in me
+     set logging to false
      set :type to @xu-type of xC
      set :count to @xu-count of xC mod 5
      set @data-highlight-mod of xC to :count
      call ranges.getOrInsert(:type + :count, []) then set rA to it
-     js(me, xC)
+     js(me, xC, logging)
+     if(logging) console.log("CHANGE", xC);
      let r = new Range();
      let n = Number(xC.getAttribute('xu-highlight'));
      let offset = 0;
      r.setStartAfter(xC);
      let nibling = xC.nextSibling;
      while(nibling && offset <= n){
+         if(logging){
+             console.log("LOOPING", nibling, n, offset);
+         }
          if (nibling.nodeType == 3) {
-             if (offset + nibling.nodeValue.length > n) break;
+             if (nibling.nextSibling == null || offset + nibling.nodeValue.length > n) break;
              offset += nibling.nodeValue.length
          } else if (nibling.childNodes){
              offset += nibling.textContent.length
          }
+         if(nibling.nextSibling == null) break;
          nibling = nibling.nextSibling;
      }
+     if(logging) console.log("END", nibling, n, offset);
+     
      if(nibling && nibling.nodeType == 3){
-         r.setEnd(nibling,  Math.max(n - offset, 0));         
+         r.setEnd(nibling,  Math.min(Math.max(n - offset, 0), nibling.nodeValue.length));         
      } else if(nibling){
          r.setEndAfter(nibling)
      } else {
