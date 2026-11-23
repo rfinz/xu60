@@ -305,7 +305,7 @@ the `meta` endpoint delivers a more complete set of machine-readable metadata in
 ## suggested types of **xu60** deployments
 - **"[quinish](https://en.wikipedia.org/wiki/Quine_(computing))"**
 
-  a site's git repository and the site itself are one in the same -- **xu60** delivers the contents on the www. The website for this project is itself a quinish [under construction].
+  a site's git repository and the site itself are one in the same -- **xu60** delivers the contents on the www. The [website](https://xu60.xyz) for this project is itself a quinish [under construction].
   
 - **version tracking**
 
