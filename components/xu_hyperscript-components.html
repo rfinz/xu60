@@ -4,6 +4,7 @@
         _="init
         fetch `/meta/object/${@xu-object}` as JSON
         set ^metadata to the result
+        set @xu-time to ^metadata.names[0].time -- FIXME
         set @xu-previous to ^metadata.previous_version.id
         set @xu-current to ^metadata.id
         set @xu-next to ^metadata.next_version.id
@@ -57,7 +58,6 @@
         end
         ">
   <div class="content"><slot/></div>
-                                                      
 </script>
 
 <script type="text/hyperscript-template" component="xu60-parallel"></script>

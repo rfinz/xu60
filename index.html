@@ -93,7 +93,7 @@
 
       <script type="text/hyperscript-template" id="panel">
        <div _="install ScrollLock" xu-object=${oid} class="panel mx2 outline bg-white w-25 flex-none truncate o8 glow h7 f-mono-code xu-other">
-       <xu60-version class="pre" xu-object=${oid}>Loading...</xu-version>
+         <xu60-version class="pre" xu-object=${oid}>Loading...</xu-version>
        </div>
       </script>
       
@@ -120,6 +120,10 @@
 
                on xu60:version:done queue last
                highlight(me)
+               set :time to (event.detail.sender's @xu-time as Number) * 1000
+               make a <div.tc.outline.sticky.bg-white/> then set its textContent to Temporal.Instant.fromEpochMilliseconds(:time).toLocaleString()
+               set its *top to 0
+               then put it before event.detail.sender
                end
 
                on scroll queue none    
@@ -158,7 +162,7 @@
                set $display to <div.panel:not([hidden])/> in me
                end
                "
-           class="flex flex-nowrap items-right nowrap h7ish p4 overflow-x-scroll trans-all"
+           class="flex flex-nowrap items-end nowrap h7ish p4 overflow-x-scroll trans-all"
       >
       </div>
       <p class="slate-gray-2 tc bg-white">&uarr;&uarr;&uarr; under construction &uarr;&uarr;&uarr;</p>
