@@ -44,15 +44,19 @@
         append [c[0] as Number, it] to marks
         increment :count
         end
-        
+
         set :prev to 0
         set :contents to ^metadata.body
         for m in marks.sort(\ a, b -> a[0] - b[0])
-        pick characters :prev to m[0] from :contents then append it to :textFragments
+        pick characters :prev to m[0] from :contents then set :frag to it
+        make a <pre/> called tmp then set its textContent to :frag
+        append tmp's innerHTML to :textFragments
         append m[1].outerHTML to :textFragments
         set :prev to m[0]
         end
-        pick characters :prev to (:contents.length - 1) from :contents then append it to :textFragments
+        pick characters :prev to (:contents.length - 1) from :contents then set :frag to it
+        make a <pre/> called tmp then set its textContent to :frag
+        append tmp's innerHTML to :textFragments
         set :final to :textFragments joined by ''
         set innerHTML of first .content in me to :final then settle
         then trigger xu60:version:done
