@@ -93,14 +93,14 @@
 
       <script type="text/hyperscript-template" id="panel">
        <div _="install ScrollLock" xu-object=${oid} class="panel mx2 outline bg-white w-25 flex-none truncate o8 glow h7 f-mono-code xu-other">
-         <xu60-version class="pre" xu-object=${oid}>Loading...</xu-version>
+         <xu60-version class="pre h-100" xu-object=${oid}>Loading...</xu-version>
        </div>
       </script>
       
       <script type="text/hyperscript-template" id="scroller">
        #for v in versions
         <div _="install ScrollLock" xu-object=${v} class="panel mx2 outline bg-white w-25 flex-none truncate o8 glow h7 f-mono-code xu-other">
-          <xu60-version class="pre" xu-object=${v}>Loading...</xu-version>
+          <xu60-version class="pre h-100" xu-object=${v}>Loading...</xu-version>
        </div>
        #end
       </script>
@@ -121,9 +121,12 @@
                on xu60:version:done queue last
                highlight(me)
                set :time to (event.detail.sender's @xu-time as Number) * 1000
-               make a <div.tc.outline.sticky.bg-white/> then set its textContent to Temporal.Instant.fromEpochMilliseconds(:time).toLocaleString()
+               make a <div.tc.bb.sticky.bg-white/> then set its textContent to Temporal.Instant.fromEpochMilliseconds(:time).toLocaleString()
                set its *top to 0
                then put it before event.detail.sender
+               make a <div.tc.bt.sticky.bg-white/> then set its textContent to event.detail.sender's @xu-message
+               set its *bottom to 0
+               then put it after event.detail.sender
                end
 
                on scroll queue none    

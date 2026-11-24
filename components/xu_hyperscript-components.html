@@ -5,6 +5,7 @@
         fetch `/meta/object/${@xu-object}` as JSON
         set ^metadata to the result
         set @xu-time to ^metadata.names[0].time -- FIXME
+        set @xu-message to ^metadata.names[0].message -- FIXME      
         set @xu-previous to ^metadata.previous_version.id
         set @xu-current to ^metadata.id
         set @xu-next to ^metadata.next_version.id
@@ -57,7 +58,7 @@
         then trigger xu60:version:done
         end
         ">
-  <div class="content"><slot/></div>
+  <div class="content" style="min-height:100%;"><slot/></div>
 </script>
 
 <script type="text/hyperscript-template" component="xu60-parallel"></script>
