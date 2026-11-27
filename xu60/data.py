@@ -130,23 +130,27 @@ def changes(v1, v2):
         flags=DiffOption.PATIENCE|DiffOption.MINIMAL,
         context_lines=0
     )
-
+    total_off = 0
+    
     for h in patch.hunks:
         tlines = [l for l in h.lines if l.origin == '+'] # to lines
         flines = [l for l in h.lines if l.origin == '-'] # from lines
-
+        
         if tlines:
-            t_soff = tlines[0].content_offset
-            t_eoff = tlines[-1].content_offset + len(tlines[-1].content)
+            t_soff = len(v1.data[0:tlines[0].content_offset].decode('utf-8'))
+            t_eoff = max([len(v1.data[0:t.content_offset].decode('utf-8')) + len(t.content) for t in tlines])
         else:
-            t_soff = t_eoff = h.lines[0].content_offset
+            t_soff = t_eoff = len(v1.data[0:flines[0].content_offset].decode('utf-8'))
 
         if flines:
-            f_soff = flines[0].content_offset
-            f_eoff = flines[-1].content_offset + len(flines[-1].content)
+            f_soff = len(v1.data[0:flines[0].content_offset].decode('utf-8'))
+            f_eoff = max([len(v1.data[0:f.content_offset].decode('utf-8')) + len(f.content) for f in flines])
         else:
-            f_soff = f_eoff = h.lines[0].content_offset
+            f_soff = f_eoff = len(v1.data[0:tlines[0].content_offset].decode('utf-8')) - total_off
 
+        print([(l.origin, l.content_offset, l.content) for l in h.lines], total_off)
+        total_off += sum([len(t.content) for t in tlines] + [len(f.content) * -1 for f in flines])
+        
         c += [{
             "from": f"{f_soff}/-/{f_eoff}",
             "to": f"{t_soff}/-/{t_eoff}"
